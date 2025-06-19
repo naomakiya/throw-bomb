@@ -1,0 +1,724 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>e5c3f019-ed85-404e-bf5c-2f02c191a4b2</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>f5647be7-5a53-4d34-acd3-6b5390bb4906</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{447ec337-27f5-43cb-9537-fd2bc2ae3320}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{5d5c6347-fed2-45b8-aefc-67158c86124b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Sceen">
+      <UniqueIdentifier>{d989f7ac-fc68-4893-8c75-d41a3deabe44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interface">
+      <UniqueIdentifier>{f40ffd65-8f6f-4401-bb1e-d906c38ae46a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{6c213d42-1e6c-4f89-a3f7-31efdc1f528a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\MyLib">
+      <UniqueIdentifier>{ea03878f-1755-4cbf-81f3-a34240650ae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\Microsoft">
+      <UniqueIdentifier>{af418d0d-7611-4cdf-8c80-1110c8571b3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{ec81aaf0-492c-4d8d-abfe-d4fc93973ea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Fonts">
+      <UniqueIdentifier>{7668ed29-2d25-4e22-a767-95fb09e0c8dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene">
+      <UniqueIdentifier>{2a0ce0bf-e34c-4662-8f67-290ecffaf16b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\Bom">
+      <UniqueIdentifier>{0f225ca5-b0df-48e5-b2f3-85bc610e3e1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\Camera">
+      <UniqueIdentifier>{047c98e1-f0e9-47a7-b8ba-2cbd827d14dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\Floor">
+      <UniqueIdentifier>{76e5b37b-a93a-45e3-9f95-e4131bfc4ac3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\Player">
+      <UniqueIdentifier>{a179cdeb-aaf2-473a-bcb3-1568464885b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\Player\State">
+      <UniqueIdentifier>{fd30edca-0b2f-46db-bf87-69acb4203482}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\Wall">
+      <UniqueIdentifier>{e5d2635e-62d6-4a73-9353-ebb2383b89e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\UI">
+      <UniqueIdentifier>{82ae72e8-3367-4e4a-be51-70d002e08a9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Goal">
+      <UniqueIdentifier>{815090a7-d461-4f9f-836d-0f5e39753f06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\shaders">
+      <UniqueIdentifier>{aa07d192-4059-4b09-8e0a-64aa7b7fc9af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\Bom\State">
+      <UniqueIdentifier>{27e17bc0-d936-4fab-8196-4a6eaf96d993}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Collision">
+      <UniqueIdentifier>{71aecb1e-9a9a-413b-ba26-9dd5d6db6b56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\nol">
+      <UniqueIdentifier>{3e628e30-f4fe-4be1-b5a4-9f5d6c934b51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\FBX">
+      <UniqueIdentifier>{d2d33a2a-3304-4162-96bc-a577142e2572}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\ResourceManager">
+      <UniqueIdentifier>{19487e12-d288-427c-b6a1-e3b42f7e299e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Shadow">
+      <UniqueIdentifier>{ded7e52b-8b93-4c9f-a96d-d2e7d8e90033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\UI\hart">
+      <UniqueIdentifier>{78b2a17e-d280-4ac9-8c91-82e8a0ccff7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Sound">
+      <UniqueIdentifier>{ad0da332-57b1-47a4-b6b0-65a2a58e91c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\Vase">
+      <UniqueIdentifier>{2130b100-1fd0-454f-ada1-0250bc0de1f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\UI\ButtonUI">
+      <UniqueIdentifier>{29e38ee3-3e31-4ebb-b1ab-6981385b3c2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\shaders\PointLight">
+      <UniqueIdentifier>{286480b8-bfa5-4889-947a-f5acd8479692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\shaders\Explosion.">
+      <UniqueIdentifier>{0270091f-edcc-47f4-b974-8bf9b94ff083}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\shaders\Enemy">
+      <UniqueIdentifier>{dd91e6b1-f6fa-4a69-8005-0c4e62a633c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\EnemyManager">
+      <UniqueIdentifier>{a7b08982-7d04-40ff-91da-2ddb065a902a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\EnemyManager\Enemy">
+      <UniqueIdentifier>{5920bc5c-a101-44c5-a409-d04183352883}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\EnemyManager\Enemy\State">
+      <UniqueIdentifier>{0966acdf-002e-48df-920e-afec2ff2fbf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\EnemyManager\StraighteningEnemy">
+      <UniqueIdentifier>{22dfbbe4-4997-4c43-9ab0-84b8c1a8428d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\EnemyManager\StraighteningEnemy\StraighteningEnemyState">
+      <UniqueIdentifier>{1afe26ce-abda-4703-a942-75bef5f05f34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\EnemyManager\Factory">
+      <UniqueIdentifier>{be3f1b93-48c9-406c-821e-416953cd5d21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\UI\Number">
+      <UniqueIdentifier>{60a37bab-8ffc-4591-aae5-7e46c2229057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\PlayScene\UI\BomUI">
+      <UniqueIdentifier>{aa76ebd3-2a90-4a5f-9bd8-28ea3126dee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Dithering">
+      <UniqueIdentifier>{c603bf1b-c183-42a2-8be8-a478ee0888fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\TitleOp">
+      <UniqueIdentifier>{b3cce47b-d669-4095-88bf-9263fc2494f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\shaders\OPFade">
+      <UniqueIdentifier>{f4e519e9-c72b-499d-9498-0f05b292dd79}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Game\Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\DeviceResources.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\StepTimer.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\TitleScene.h">
+      <Filter>Game\Sceen</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\IScene.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\CommonResources.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\SceneManager.h">
+      <Filter>Game\Sceen</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\PlayScene.h">
+      <Filter>Game\Sceen</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\DebugString.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\GridFloor.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\InputManager.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\MemoryLeakDetector.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Microsoft\DebugDraw.h">
+      <Filter>Libraries\Microsoft</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\IPlayerState.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player\State\PlayerIdling.h">
+      <Filter>Game\PlayScene\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Graphics.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Resources.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Animation.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Floor\Floor.h">
+      <Filter>Game\PlayScene\Floor</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Screen.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Camera.h">
+      <Filter>Game\PlayScene\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Collision\Collision.h">
+      <Filter>Game\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wall\Wall.h">
+      <Filter>Game\PlayScene\Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\ResultScene.h">
+      <Filter>Game\Sceen</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\EnemyState.h">
+      <Filter>Game\PlayScene\EnemyManager\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\IEnemyFactory.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\IEnemyState.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\State\EnmyExist.h">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\State\EnemyMovement.h">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Factory\EnemyFactory.h">
+      <Filter>Game\PlayScene\EnemyManager\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\IComponent.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Goal\Goal.h">
+      <Filter>Game\Goal</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player\PlayerState.h">
+      <Filter>Game\PlayScene\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player\State\PlayerMovement.h">
+      <Filter>Game\PlayScene\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player\State\PlayerBomHand.h">
+      <Filter>Game\PlayScene\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Microsoft\ReadData.h">
+      <Filter>Libraries\Microsoft</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Graph.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Vertex.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\GameOver.h">
+      <Filter>Game\Sceen</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\BinaryFile.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\UserInterface.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\IBomState.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Bom\State\BomExist.h">
+      <Filter>Game\PlayScene\Bom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Bom\State\BomMovement.h">
+      <Filter>Game\PlayScene\Bom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResourceManager\ResourceManager.h">
+      <Filter>Game\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\IWallFactory.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Factory\WallFactory.h">
+      <Filter>Game\PlayScene\Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\State\EnemyTracking.h">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shadow\Shadow.h">
+      <Filter>Game\Shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Fade.h">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Star.h">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\StarUtility.h">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\CollisionDebugRenderer.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Sound\Sound.h">
+      <Filter>Game\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Vase\Vase.h">
+      <Filter>Game\PlayScene\Vase</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Bom\State\BomExplosion.h">
+      <Filter>Game\PlayScene\Bom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\CollisionMesh.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\State\EnmyStop.h">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Game\Scene\SelectScene.h">
+      <Filter>Game\Sceen</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\ButtonUI\ButtonUI.h">
+      <Filter>Game\PlayScene\UI\ButtonUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\StraighteningEnemyState.h">
+      <Filter>Game\PlayScene\EnemyManager\StraighteningEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\StraighteningEnemyState\StraighteningEnemyExist.h">
+      <Filter>Game\PlayScene\EnemyManager\StraighteningEnemy\StraighteningEnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Factory\StraighteningEnemyFactory.h">
+      <Filter>Game\PlayScene\EnemyManager\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\StraighteningEnemyState\StraighteningEnemySearch.h">
+      <Filter>Game\PlayScene\EnemyManager\StraighteningEnemy\StraighteningEnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\StraighteningEnemyState\StraighteningEnemyDash.h">
+      <Filter>Game\PlayScene\EnemyManager\StraighteningEnemy\StraighteningEnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\EnemyManager.h">
+      <Filter>Game\PlayScene\EnemyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\LoadJson.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Number\Number.h">
+      <Filter>Game\PlayScene\UI\Number</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\BomUI\BomUI.h">
+      <Filter>Game\PlayScene\UI\BomUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Hart\HartUI.h">
+      <Filter>Game\PlayScene\UI\hart</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Hart\HollowHartUI.h">
+      <Filter>Game\PlayScene\UI\hart</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Dithering\Dithering.h">
+      <Filter>Game\Dithering</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\Utils.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\UI.h">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\TitleOp\TitleOp.h">
+      <Filter>Game\TitleOp</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResourceManager\ModelResource.h">
+      <Filter>Game\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResourceManager\TextureResource.h">
+      <Filter>Game\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResourceManager\BGMResource.h">
+      <Filter>Game\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResourceManager\SEResource.h">
+      <Filter>Game\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResourceManager\StageResource.h">
+      <Filter>Game\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\IPatrolStrategy.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\AvoidObjectPatrol.h">
+      <Filter>Game\PlayScene\EnemyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Bom\BomState.h">
+      <Filter>Game\PlayScene\Bom</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Bom\State\BomStay.h">
+      <Filter>Game\PlayScene\Bom\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\ICollisionMeshFactory.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Factory\CollisionMeshFactory.h">
+      <Filter>Game\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\State\EnemyPointMovement.h">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\State\EnemySearch.h">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Smork.h">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\SmorkUtility.h">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Game\Main.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\DeviceResources.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\TitleScene.cpp">
+      <Filter>Game\Sceen</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\CommonResources.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\SceneManager.cpp">
+      <Filter>Game\Sceen</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\PlayScene.cpp">
+      <Filter>Game\Sceen</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\DebugString.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\GridFloor.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\InputManager.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Microsoft\DebugDraw.cpp">
+      <Filter>Libraries\Microsoft</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player\State\PlayerIdling.cpp">
+      <Filter>Game\PlayScene\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Graphics.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Resources.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Animation.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Floor\Floor.cpp">
+      <Filter>Game\PlayScene\Floor</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Camera.cpp">
+      <Filter>Game\PlayScene\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Collision\Collision.cpp">
+      <Filter>Game\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wall\Wall.cpp">
+      <Filter>Game\PlayScene\Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\ResultScene.cpp">
+      <Filter>Game\Sceen</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\UI.cpp">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\EnemyState.cpp">
+      <Filter>Game\PlayScene\EnemyManager\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\State\EnmyExist.cpp">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\State\EnemyMovement.cpp">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Factory\EnemyFactory.cpp">
+      <Filter>Game\PlayScene\EnemyManager\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Goal\Goal.cpp">
+      <Filter>Game\Goal</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player\PlayerState.cpp">
+      <Filter>Game\PlayScene\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player\State\PlayerMovement.cpp">
+      <Filter>Game\PlayScene\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player\State\PlayerBomHand.cpp">
+      <Filter>Game\PlayScene\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Vertex.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameOver.cpp">
+      <Filter>Game\Sceen</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\BinaryFile.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\UserInterface.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Bom\BomState.cpp">
+      <Filter>Game\PlayScene\Bom</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Bom\State\BomExist.cpp">
+      <Filter>Game\PlayScene\Bom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Bom\State\BomMovement.cpp">
+      <Filter>Game\PlayScene\Bom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResourceManager\ResourceManager.cpp">
+      <Filter>Game\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Factory\WallFactory.cpp">
+      <Filter>Game\PlayScene\Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\State\EnemyTracking.cpp">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shadow\Shadow.cpp">
+      <Filter>Game\Shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Fade.cpp">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Star.cpp">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\CollisionDebugRenderer.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\StarUtility.cpp">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Sound\Sound.cpp">
+      <Filter>Game\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Vase\Vase.cpp">
+      <Filter>Game\PlayScene\Vase</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Bom\State\BomExplosion.cpp">
+      <Filter>Game\PlayScene\Bom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\CollisionMesh.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Bom\State\BomStay.cpp">
+      <Filter>Game\PlayScene\Bom\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\State\EnmyStop.cpp">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\SelectScene.cpp">
+      <Filter>Game\Sceen</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\ButtonUI\ButtonUI.cpp">
+      <Filter>Game\PlayScene\UI\ButtonUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\StraighteningEnemyState.cpp">
+      <Filter>Game\PlayScene\EnemyManager\StraighteningEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\StraighteningEnemyState\StraighteningEnemyExist.cpp">
+      <Filter>Game\PlayScene\EnemyManager\StraighteningEnemy\StraighteningEnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Factory\StraighteningEnemyFactory.cpp">
+      <Filter>Game\PlayScene\EnemyManager\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\StraighteningEnemyState\StraighteningEnemySearch.cpp">
+      <Filter>Game\PlayScene\EnemyManager\StraighteningEnemy\StraighteningEnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\StraighteningEnemyState\StraighteningEnemyDash.cpp">
+      <Filter>Game\PlayScene\EnemyManager\StraighteningEnemy\StraighteningEnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\EnemyManager.cpp">
+      <Filter>Game\PlayScene\EnemyManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\LoadJson.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Number\Number.cpp">
+      <Filter>Game\PlayScene\UI\Number</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\BomUI\BomUI.cpp">
+      <Filter>Game\PlayScene\UI\BomUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Hart\HartUI.cpp">
+      <Filter>Game\PlayScene\UI\hart</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Hart\HollowHartUI.cpp">
+      <Filter>Game\PlayScene\UI\hart</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Dithering\Dithering.cpp">
+      <Filter>Game\Dithering</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\TitleOp\TitleOp.cpp">
+      <Filter>Game\TitleOp</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResourceManager\ModelResource.cpp">
+      <Filter>Game\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResourceManager\TextureResource.cpp">
+      <Filter>Game\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResourceManager\BGMResource.cpp">
+      <Filter>Game\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResourceManager\SEResource.cpp">
+      <Filter>Game\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResourceManager\StageResource.cpp">
+      <Filter>Game\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Factory\CollisionMeshFactory.cpp">
+      <Filter>Game\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\State\EnemyPointMovement.cpp">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\State\EnemySearch.cpp">
+      <Filter>Game\PlayScene\EnemyManager\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Smork.cpp">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\SmorkUtility.cpp">
+      <Filter>Game\PlayScene\UI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="directx.ico">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Slow Bomb.ico">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest">
+      <Filter>Assets</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Resources\Fonts\SegoeUI_18.spritefont">
+      <Filter>Resources\Fonts</Filter>
+    </None>
+    <None Include="Resources\FBX\Wall.fbx">
+      <Filter>Resources\FBX</Filter>
+    </None>
+    <None Include="Resources\Shaders\Common.hlsli">
+      <Filter>Resources\shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Params.hlsli">
+      <Filter>Resources\shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\fade.hlsli">
+      <Filter>Resources\shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\fadeGS.hlsl">
+      <Filter>Resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\fadePS.hlsl">
+      <Filter>Resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\fadeVS.hlsl">
+      <Filter>Resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\BasePS.hlsl">
+      <Filter>Resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PointLightPS.hlsl">
+      <Filter>Resources\shaders\PointLight</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ExplosionPS.hlsl">
+      <Filter>Resources\shaders\Explosion.</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PS_Dithering.hlsl">
+      <Filter>Resources\shaders\Explosion.</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\EnemyStateColorPS.hlsl">
+      <Filter>Resources\shaders\Enemy</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NUmberPS.hlsl">
+      <Filter>Resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleGS.hlsl">
+      <Filter>Resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
+      <Filter>Resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
+      <Filter>Resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\StarPS.hlsl">
+      <Filter>Resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\OPFadePS.hlsl">
+      <Filter>Resources\shaders\OPFade</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleStarGS.hlsl">
+      <Filter>Resources\shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="EmploymentWork.rc" />
+  </ItemGroup>
+</Project>

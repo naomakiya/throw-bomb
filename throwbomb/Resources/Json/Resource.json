@@ -1,0 +1,56 @@
+{
+    "Model": {
+        "Wall"      : "Resources/Models/Wall.cmo",
+        "WallFloor" : "Resources/Models/WallFloor.cmo",
+        "CrackWall" : "Resources/Models/WallCrack.cmo",
+        "SkyDome"   : "Resources/Models/sky.cmo",
+        "DashuEnemy": "Resources/Models/Enemy/Enemy.cmo",
+        "Enemy"     : "Resources/Models/Enemy/flyEnemy.cmo",
+        "PlayerFace": "Resources/Models/Player/face.cmo",
+        "PlayerBody": "Resources/Models/Player/Body.cmo",
+        "PlayerHand": "Resources/Models/Player/PlayerHand.cmo",
+        "Bom"       : "Resources/Models/Bom.cmo",
+        "Exprol"    : "Resources/Models/exprol/exprol.cmo",
+        "stairs1"   : "Resources/Models/stairs2.cmo",
+        "stairs2"   : "Resources/Models/stairs3.cmo"
+
+    },
+    "Texture": {
+        "Floor"          : "Resources/Textures/Floor.png",
+        "Strat"          : "Resources/Textures/Strat.png",
+        "Finish"         : "Resources/Textures/finish.png",
+        "TitleName"      : "Resources/Textures/Title.png",
+        "Clear"          : "Resources/Textures/Clear.png",
+        "ReTry"          : "Resources/Textures/Retry.png",
+        "Select"          : "Resources/Textures/SelectButton.png",
+        "Option"         : "Resources/Textures/Optiom.png",
+        "TitleButton"    : "Resources/Textures/TitleButton.png",
+        "Cave"           : "Resources/Textures/cave.png",
+        "Box"            : "Resources/Textures/Box.png",
+        "BGM"            : "Resources/Textures/BGM.png",
+        "SE"             : "Resources/Textures/SE.png",
+        "VolumeBox"      : "Resources/Textures/volumeBox.png",
+        "Close"          : "Resources/Textures/Close.png",
+        "Frame"          : "Resources/Textures/Frame.png",
+        "Boms"           : "Resources/Textures/Boms.png",
+        "ExclamationMark": "Resources/Textures/exclamationMark.png",
+        "1"              : "Resources/Textures/1.png",
+        "2"              : "Resources/Textures/2.png",
+        "3"              : "Resources/Textures/3.png"
+
+
+    },
+    "BGM": {
+        "TitleBGM" : "Resources/Sounds/ほんわかぷっぷー.mp3",
+        "PlayBGM"  : "Resources/Sounds/Caravan.mp3",
+        "ResultBGM": "Resources/Sounds/栄光のファンファーレ.mp3"
+    },
+    "SE": {
+        "Bom": "Resources/Sounds/Bom.mp3"
+    },
+    "Stage": {
+        "1": "Resources/Json/1.json",
+        "2": "Resources/Json/2.json",
+        "3": "Resources/Json/3.json"
+    }
+}
