@@ -350,6 +350,9 @@ void TitleOp::CreateShader()
     cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     /*cbDesc.MiscFlags = 0;
     cbDesc.StructureByteStride = 0;*/
+
+    HRESULT hr = device->CreateBuffer(&cbDesc, nullptr, &m_CBufferexp);
+    assert(SUCCEEDED(hr));
 }
 
 void TitleOp::LoadTexture(const wchar_t* path)

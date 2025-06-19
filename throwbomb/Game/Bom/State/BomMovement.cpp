@@ -47,7 +47,7 @@ void BomMovement::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	//auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// ƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş€”õ
 	std::unique_ptr<DirectX::DX11::EffectFactory> fx = std::make_unique<DirectX::DX11::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
