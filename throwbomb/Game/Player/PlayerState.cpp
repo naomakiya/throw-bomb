@@ -115,7 +115,9 @@ void PlayerState::Update(const float& elapsedTime)
 	CheckKeyboard();
 	// 現在持っているボムを投げる
 	if(IsThroeableBom()){
+		// 投げる
 		m_isThrow = true;
+		// アイドリング状態に移行
 		ChangeState(m_playerIdling.get());
 	}
 	//ボムの更新
@@ -144,7 +146,6 @@ void PlayerState::Render(const DirectX::SimpleMath::Matrix& view, const DirectX:
 	m_currentState->Render(view, projection);
 	//ボムの描画
 	for (auto& bom : m_bom){
-		//ボムの描画
 		bom->Render(view, projection);
 	}
 	// 自機の影を描画する
@@ -185,18 +186,18 @@ void PlayerState::Finalize()
 //---------------------------------------------------------
 void PlayerState::CheckCollisionWithFloor()
 {
-	for (auto& floor : m_floors)
-	{
+	for (auto& floor : m_floors){
 		// 衝突判定
 		if (!mylib::Collision::BoundingCheckBoxCollision(m_boundingBox, floor->GetBoundingBox())) continue;
 
+		// 床のY軸を取得
 		float floorTopY = floor->GetPosition().y;
 
 		// プレイヤーが床より下にいる場合のみ接地判定
-		if (m_position.y < floorTopY + 1.50f)
-		{
-			m_position.y = floorTopY + 1.00f; // 床の上に固定
-			return; // 一度接地したら他の床のチェックは不要
+		if (m_position.y < floorTopY + 1.50f){
+			// 床の上に固定
+			m_position.y = floorTopY + 1.00f; 
+			return; 
 		}
 	}
 }

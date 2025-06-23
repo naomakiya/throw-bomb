@@ -4,20 +4,42 @@
 */
 #include "pch.h"
 #include "Floor.h"
-#include <WICTextureLoader.h> 
 #include "Framework/CommonResources.h"
 #include "Framework/DeviceResources.h"
-//#include <GeometricPrimitive.h>
+#include "Game/ResourceManager/ResourceManager.h"
 
 //---------------------------------------------------------
 // コンストラクト
 //---------------------------------------------------------
-Floor::Floor(ID3D11Device1* device,  DirectX::SimpleMath::Vector3 position, float width, float depth)
-	:m_position(position),
-	m_width(width),
-	m_depth(depth)
+Floor::Floor()
+	:
+	m_commonResources{},
+	m_position{DirectX::SimpleMath::Vector3(0.0f,0.0f,0.0f)}
+{
+}
+
+//---------------------------------------------------------
+// デストラクタ
+//---------------------------------------------------------
+Floor::~Floor()
+{
+
+}
+
+//---------------------------------------------------------
+// 初期化
+//---------------------------------------------------------
+void Floor::Initialize(CommonResources* resources)
 {
 	using namespace DirectX;
+
+	assert(resources);
+
+	// 共通リソースの設定
+	m_commonResources = resources;
+
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 
 	// エフェクトの作成
 	m_BatchEffect = std::make_unique<AlphaTestEffect>(device);
@@ -33,44 +55,27 @@ Floor::Floor(ID3D11Device1* device,  DirectX::SimpleMath::Vector3 position, floa
 		VertexPositionTexture::InputElementCount,
 		shaderByteCode, byteCodeLength, m_InputLayout.GetAddressOf()
 	);
-}
 
-//---------------------------------------------------------
-// デストラクタ
-//---------------------------------------------------------
-Floor::~Floor()
-{
-
-}
-
-//---------------------------------------------------------
-// 初期化
-//---------------------------------------------------------
-void Floor::Initialize(ID3D11Device1* device, CommonResources* resources)
-{
-	using namespace DirectX;
-
-	assert(resources);
-	// 共通リソースの設定
-	m_commonResources = resources;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// テクスチャのロード
 	CreateWICTextureFromFile(
 		device,
-		L"Resources/Textures/Floor.png", // 床のテクスチャファイル
+		ResourceManager::getTexturePath("Floor").c_str(), 
 		nullptr,
 		m_Texture.GetAddressOf()
 	);
 	
+
 	// ボックスを作成（サイズ：幅、深さ、非常に薄い高さ）
-	XMFLOAT3 size(m_width, 1.0f, m_depth);  // 高さは非常に薄い床として設定
-	//立方体の作成
+	XMFLOAT3 size(FLOORWIDTH, 1.0f,FLOORDEPT); 
+
+	// 立方体の作成
 	m_floorPrimitive = GeometricPrimitive::CreateBox(context, size);
-	//　バウンディングボックスの作成
+
+	// バウンディングボックスの作成
 	m_boundingBox.Center = m_position;
 	m_boundingBox.Extents = size;
 
-	// 深度ステンシルステート設定（床用）
+	// 深度ステンシルステート設定
 	D3D11_DEPTH_STENCIL_DESC desc = {};
 	desc.DepthEnable = true;
 	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -95,15 +100,18 @@ void Floor::Initialize(ID3D11Device1* device, CommonResources* resources)
 //---------------------------------------------------------
 // 描画
 //---------------------------------------------------------
-void Floor::Render(ID3D11DeviceContext1* context, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void Floor::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX;
+
 	auto states = m_commonResources->GetCommonStates();
-	// ワールド行列（床の位置、スケーリング）
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+
+	// ワールド行列（床の位置）
 	SimpleMath::Matrix worldMatrix = SimpleMath::Matrix::CreateTranslation(m_position);
 
 	// 描画時のエフェクト設定
-	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER); // 不透明
+	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
 	m_BatchEffect->SetReferenceAlpha(0);
 	m_BatchEffect->SetWorld(worldMatrix);
 	m_BatchEffect->SetView(view);
@@ -112,8 +120,11 @@ void Floor::Render(ID3D11DeviceContext1* context, DirectX::SimpleMath::Matrix vi
 	m_BatchEffect->Apply(context);
 
 	// 描画ステート設定
-	context->OMSetDepthStencilState(m_depthStencilState.Get(), 0); // 深度ステンシルステート設定
-	context->RSSetState(states->CullCounterClockwise()); // カリング設定
+	
+	// 深度ステンシルステート設定
+	context->OMSetDepthStencilState(m_depthStencilState.Get(), 0);
+	// カリング設定
+	context->RSSetState(states->CullCounterClockwise()); 
 
 	// ジオメトリックプリミティブの描画
 	m_floorPrimitive->Draw(worldMatrix, view, proj, Colors::White, m_Texture.Get());

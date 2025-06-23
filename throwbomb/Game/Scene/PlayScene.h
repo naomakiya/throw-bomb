@@ -27,6 +27,7 @@ namespace mylib
 {
 	class CollisionMesh;
 }
+
 class PlayScene final :	public IScene
 {
 public:
@@ -44,19 +45,23 @@ public:
 	void Finalize() override;
 	// 次のシーンの獲得
 	SceneID GetNextSceneID() const;
+
 private:
 	// クラスの生成
-	void ClassCreate();
+	void CreateClass();
 	// ジェイソンの読み込み
 	void loadMapJSON(const char* filename);
 	//カメラ処理
 	void CameraRotate();
 	//坂の当たり判定(プレイヤ）
-	void CollisionMeshDeterminationPlayer();
+	void CheckPlayerCollisionMesh();
 	//坂の当たり判定(ボム）
-	void CollisionMeshDeterminationBom();
+	void CheckBomCollisionMesh();
 	//　スカイモデルの描画
-	void SkyModelRender();
+	void RenderSkyModel();
+	// リザルトチェンジ用の変数の設定
+	void RequestResultScene();
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -78,23 +83,17 @@ private:
 	std::unique_ptr<UI> m_ui;
 	// ゴール
 	std::unique_ptr<Goal> m_goal;
-	// 
+	// シーンマネージャ
 	SceneManager* m_sceneManager;
 	// スカイモデル
 	std::unique_ptr<DirectX::Model> m_sky;
-	// 壁モデル
-	std::unique_ptr<DirectX::Model> m_wallModel;
-	// 敵モデル
-	std::unique_ptr<DirectX::Model> m_enemyModel;
-	// 入力グラフデータ
-	std::vector<std::string> m_graphData;
 	// マップデータ
 	std::vector<DirectX::SimpleMath::Vector3> m_map;
-	// マップデータ
+	// 壁の種類マップデータ
 	std::vector<int> m_typemap;
-	// マップデータ
+	// 敵の位置のマップデータ
 	std::vector<DirectX::SimpleMath::Vector3> m_enemyMap;
-	// マップデータ
+	// 突進敵の位置のマップデータ
 	std::vector<DirectX::SimpleMath::Vector3> m_straighteningEnemyMap;
 	// 坂の位置マップデータ
 	std::vector<DirectX::SimpleMath::Vector3> m_collisionMeshPosMap;
@@ -112,37 +111,39 @@ private:
 	std::vector<std::unique_ptr<Vase>> m_vase;
 	// フェイド
 	std::unique_ptr<Fade> m_fade;
-	// 破壊可能壁モデル
-	std::unique_ptr<DirectX::Model> m_Wallcrack;
+
+public:
+	// 強く押し返す
+	static constexpr float PUSHBACKSTRENGTH = 0.5f;
+	//　弱く押し返す
+	static constexpr float SMALLPUSHBACKSTRENGTH = 0.01f;
+
 private:
-	//経過時間
-	float m_elapsedTime;
-	// 体力減った時の次に体力減るまでのクールタイム
-	float m_heartCooldownTimer = 0.0f;
-	//BGMの音量
-	float m_bgmVolume;
-	// SEの音量
-	float m_seVolume;
-	//プレイヤーの場所の保存
+	// 衝突したポリゴンの法線の傾き
+	DirectX::SimpleMath::Matrix m_rotateNormal;
+	// プレイヤーの場所の保存
 	DirectX::SimpleMath::Vector3 m_playerPos;
 	// ポリゴンとRayが衝突した座標
 	DirectX::SimpleMath::Vector3 m_hitPosition;
+	// 経過時間
+	float m_elapsedTime;
+	// 体力減った時の次に体力減るまでのクールタイム
+	float m_downheartCoolTimer;
+	// BGMの音量
+	float m_bgmVolume;
+	// SEの音量
+	float m_seVolume;
 	// 衝突したポリゴンの番号
 	int m_hitPolygonNo;
-	// 衝突したポリゴンの法線の傾き
-	DirectX::SimpleMath::Matrix m_rotateNormal;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// シーンチェンジフラグ(HP）
-	bool m_iseEmptyHart;
-	//長押しされていたな
-	bool isSpaceHeld = false;
-	bool on = false;
-	bool m_canCountHeart = true;
-	bool m_canCreateBomb = false;
-	bool m_holdBom = false;
-	bool m_se = false;
-	bool rotateLeftPressed = false;
-	bool rotateRightPressed = false;
+	bool m_isEmptyHart;
+	// ダメージを受けたか
+	bool m_isDamageHeart;
+	// 左回転中か
+	bool m_isrotateLeftPressed;
+	// 右回転中か
+	bool m_isrotateRightPressed;
 
 };

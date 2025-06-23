@@ -1,6 +1,6 @@
 /*
   @file  CollisionMeshFactory.cpp
-  @brief 壁工場クラス
+  @brief 坂工場クラス
 */
 #include "pch.h"
 #include "Game/Factory/CollisionMeshFactory.h"

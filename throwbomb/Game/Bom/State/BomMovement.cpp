@@ -47,24 +47,26 @@ void BomMovement::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	
 	// モデルを読み込む準備
 	std::unique_ptr<DirectX::DX11::EffectFactory> fx = std::make_unique<DirectX::DX11::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
-
 	//モデルをロードする
 	m_bomModel = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("Bom").c_str(), *fx);
-
+	// バウディングスフィアの設定
 	m_boundingSphere.Center = m_position;
 	m_boundingSphere.Radius = BoundingSphereRadius;
 
 #ifdef _DEBUG	// デバック時実行
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	//デバック用のコリジョン
 	m_collisionDebugRenderer = std::make_unique<CollisionDebugRenderer>(device, context);
 #endif
 }
 
-// 事前更新する
+//---------------------------------------------------------
+// 事前更新
+//---------------------------------------------------------
 void BomMovement::PreUpdate()
 {
 	m_position = m_bomState->GetPosition();
@@ -75,8 +77,9 @@ void BomMovement::PreUpdate()
 	m_bomState->SetBomPresent(BomState::BomtPresent::MOVEMENT);
 	
 }
+
 //---------------------------------------------------------
-//投射投げ
+// 投射投げ
 //---------------------------------------------------------
 void BomMovement::Projection(const DirectX::SimpleMath::Vector3& playerForwardDirection)
 {
@@ -100,9 +103,11 @@ void BomMovement::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	m_bomState->SetBoundingSphere(m_boundingSphere);
-
+	// 当たり判定の位置の更新
 	m_boundingSphere.Center = m_position;
+	// 一定速度の上書き
 	m_velocity = m_bomState->GetVelocity();
+	// 重力の更新
 	m_velocity += m_gravity * elapsedTime;
 	
 	// 地面に着地した場合、Y方向の速度を反転させる
@@ -130,6 +135,7 @@ void BomMovement::Update(const float& elapsedTime)
 	{
 		m_position.y = MinHeight;
 	}
+
 	//時間が来たら爆発させる
 	if (m_bomState->GetExplosionTimer() < 0.0f)
 	{
@@ -200,7 +206,7 @@ void BomMovement::HandleCollision()
 }
 
 //---------------------------------------------------------
-// 衝突判定する
+// 壁との衝突判定する
 //---------------------------------------------------------
 void BomMovement::CheckHit(DirectX::BoundingBox boundingBox, const bool IsWall)
 {

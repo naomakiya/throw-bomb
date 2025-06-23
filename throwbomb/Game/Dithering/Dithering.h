@@ -5,6 +5,7 @@
 #pragma once
 #ifndef DITHERING_DEFINED
 #define DITHERING_DEFINED
+
 // 前方宣言
 namespace DX
 {
@@ -20,7 +21,7 @@ private:
     {
         DirectX::SimpleMath::Matrix world;      // ワールド変換行列
         DirectX::SimpleMath::Vector3 position;  // オブジェクトのワールド座標
-        DirectX::Model* model = nullptr;                  // 描画する3Dモデル
+        DirectX::Model* model = nullptr;        // 描画する3Dモデル
     };
 
     // ライトの定数バッファ用構造体
@@ -31,7 +32,7 @@ private:
         DirectX::XMVECTOR cameraPosition;		// カメラ座標
     };
 public:
-// コンストラクタ
+    // コンストラクタ
     Dithering(ID3D11Device1* device);
     // デストラクタ
     ~Dithering();

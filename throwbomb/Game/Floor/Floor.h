@@ -20,15 +20,22 @@ public:
     DirectX::BoundingBox GetBoundingBox() const { return m_boundingBox; }
 public:
     // コンストラクタ
-    Floor(ID3D11Device1* device, DirectX::SimpleMath::Vector3 position, float width, float dept);
+    Floor();
     //デストラクタ
     ~Floor();
     //初期化
-    void Initialize(ID3D11Device1* device, CommonResources* resources);
+    void Initialize(CommonResources* resources);
     //描画
-    void Render(ID3D11DeviceContext1* context, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+    void Render(const DirectX::SimpleMath::Matrix& view,const DirectX::SimpleMath::Matrix& proj);
     //後処理
     void Finalize();
+
+public:
+    // 横幅
+    static constexpr float FLOORWIDTH = 100.0f;
+    // 奥幅
+    static constexpr float FLOORDEPT = 100.0f;
+
 private:
     // 共通リソース
     CommonResources* m_commonResources;
@@ -46,10 +53,6 @@ private:
     DirectX::BoundingBox m_boundingBox;
     // テクスチャーの座標
     DirectX::SimpleMath::Vector3 m_position;
-    // テクスチャーの幅
-    float m_width;
-    // テクスチャーの奥行き
-    float m_depth;
 };
 
 #endif  //FLOOR_DEFINED

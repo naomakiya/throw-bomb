@@ -20,8 +20,8 @@ public:
     struct ExplosionObject {
         DirectX::SimpleMath::Vector3 offset;
         float scaleMultiplier;
-        float startTime;     // 開始時間
-        float duration;      // 表示し続ける時間
+        float startTime;                         // 開始時間
+        float duration;                          // 表示し続ける時間
         bool active = true;
     };
 	// コンストラクタ
@@ -74,7 +74,7 @@ private:
     DirectX::SimpleMath::Vector3 m_position;
     // バウンディングスフィア
     DirectX::BoundingSphere m_boundingSphere;
-
+    // 複数爆破
     std::vector<ExplosionObject> m_explosionObjects;
 
     // Texture用メンバー（テクスチャーとスプライトバッチ）

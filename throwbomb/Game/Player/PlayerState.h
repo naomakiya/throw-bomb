@@ -2,6 +2,7 @@
   @file　PlayerState.h
   @brief プレイヤ状態クラス
 */
+
 #pragma once
 #ifndef PLAYERSTATE_DEFINED
 #define PLAYERSTATE_DEFINED
@@ -32,10 +33,8 @@ public:
 	// 位置を取得する
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// 位置を設定する
-	void SetPosition(const DirectX::SimpleMath::Vector3& position)
-	{
-		m_position = position;
-		m_boundingBox.Center = m_position;
+	void SetPosition(const DirectX::SimpleMath::Vector3& position){
+		m_position = position;	m_boundingBox.Center = m_position;
 	}
 	// ボムステートを取得する
 	BomState* GetBomState(int index) { if (index >= 0 && index < m_bom.size()) { return m_bom[index].get(); } return nullptr;	}
@@ -59,6 +58,7 @@ public:
 	PlayerMovement* GetPlayerMovement() const { return m_playerMovement.get(); }
 	// プレイヤーのボム持ち状態を取得する
 	PlayerBomHand* GetPlayerBomHand() const { return m_playerBomHand.get(); }
+
 public:
 	// コンストラクタ
 	PlayerState(Camera* camera, const std::vector<std::unique_ptr<Wall>>& wall, DirectX::SimpleMath::Vector3 pos, std::vector<std::shared_ptr<Floor>>& floors);
@@ -78,6 +78,7 @@ public:
 	void EnemyHitFlashing(const DirectX::Model& model, const DirectX::FXMMATRIX world, const  DirectX::CXMMATRIX view, const  DirectX::CXMMATRIX projection);
 	//敵と当たった時
 	void EnemyHit(const float& elapsedTime);
+
 private:
 	//床との当たり判定
 	void CheckCollisionWithFloor();
@@ -101,6 +102,7 @@ private:
 	void CheckBom();
 	//爆弾を投げたか投げてないか
 	bool IsThroeableBom();
+
 public:
 	//ボムの最大数
 	static constexpr int BOMMAX = 3;
@@ -110,6 +112,7 @@ public:
 	static constexpr float GRVITY = 2.5f;
 	// プレイヤーモデルの大きさ
 	static constexpr float PLAYERMODLSCALE = 0.008;
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;

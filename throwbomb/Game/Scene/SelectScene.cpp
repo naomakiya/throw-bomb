@@ -289,13 +289,13 @@ void SelectScene::TextureRender()
 	Vector2 endPos(Screen::CENTER_X , Screen::CENTER_Y + 200);
 
 	//1‘I‘ðŽˆ‚Ì•`‰æ
-	m_spriteBatch->Draw(m_one.Get(), onePos, nullptr, Colors::White * m_alpha, 0.0f,
+	m_spriteBatch->Draw(m_one.Get(), onePos, nullptr, Colors::White* 1.5f , 0.0f,
 		Vector2(639, 358), 0.3f);
 	// 2‘I‘ðŽˆ‚Ì•`‰æ
-	m_spriteBatch->Draw(m_two.Get(), twoPos, nullptr, Colors::White * m_alpha, 0.0f,
+	m_spriteBatch->Draw(m_two.Get(), twoPos, nullptr, Colors::White * 1.5f, 0.0f,
 		Vector2(637, 356), 0.3f);
 	// 3‘I‘ðŽˆ‚Ì•`‰æ
-	m_spriteBatch->Draw(m_three.Get(), threePos, nullptr, Colors::White * m_alpha, 0.0f,
+	m_spriteBatch->Draw(m_three.Get(), threePos, nullptr, Colors::White * 1.5f, 0.0f,
 		Vector2(637, 356), 0.3f);
 	// ƒ^ƒCƒgƒ‹‚Ì•`‰æ
 	m_spriteBatch->Draw(m_title.Get(), endPos, nullptr, Colors::White * m_alpha, 0.0f,
