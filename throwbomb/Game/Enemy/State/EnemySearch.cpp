@@ -7,7 +7,6 @@
 #include"Game/Enemy/EnemyState.h"
 #include"Framework/CommonResources.h"
 #include "Framework/DeviceResources.h"
-#include "Framework/Resources.h"
 #include"Game/Wall/Wall.h"
 #include"Game/Enemy/State/EnemyMovement.h"
 #include "Game/Player/PlayerState.h"

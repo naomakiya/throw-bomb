@@ -5,7 +5,6 @@
 #include "pch.h"
 #include "Game.h"
 #include "Game/Scene/SceneManager.h"
-#include "Framework/Graphics.h"
 
 
 extern void ExitGame() noexcept;

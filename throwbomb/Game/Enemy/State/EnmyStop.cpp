@@ -3,7 +3,7 @@
   @brief “G‚ÌŽ~‚Ü‚éƒNƒ‰ƒX
 */
 #include "pch.h"
-#include "Framework/Resources.h"
+#include "Framework/DeviceResources.h"
 #include "Game/Enemy/State/EnmyStop.h"
 #include "Game/Enemy/State/EnmyExist.h"
 #include "Game/Enemy/EnemyState.h"

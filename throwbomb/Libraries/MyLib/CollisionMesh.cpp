@@ -39,7 +39,6 @@ void mylib::CollisionMesh::Initialize(
 )
 {
 	assert(device);
-	assert(context);
 
 	// Objファイルを読み込む
 	this->LoadObjFile(objName);
@@ -107,7 +106,6 @@ void mylib::CollisionMesh::Draw(
   	m_model->Draw(context, *states, world, view, projection);
 
 	//坂の.objの描画するための処理
-	 
 	//// デバイスコンテキストのパラメータを設定する
 	//context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xFFFFFFFF);
 	//context->OMSetDepthStencilState(states->DepthRead(), 0);	// ステンシルバッファーへ書き込まない
@@ -129,69 +127,6 @@ void mylib::CollisionMesh::Draw(
 	//);
 	//m_primitiveBatch->End();
 }
-
-//-----------------------------------------------------
-// メッシュとRayとの衝突判定 
-//-----------------------------------------------------
-//bool mylib::CollisionMesh::IntersectRay(
-//	const DirectX::SimpleMath::Ray& ray,        // レイ
-//	DirectX::SimpleMath::Vector3* hitPosition,  // 衝突座標
-//	DirectX::SimpleMath::Vector3* normal,       // 衝突したポリゴンの法線
-//	int* polygonNo                              // 衝突したポリゴンの番号
-//)
-//{
-//	assert(hitPosition);
-//	assert(normal);
-//
-//	// コリジョンメッシュの回転や座標情報から、worldの逆行列を求める
-//	Matrix rotation = Matrix::CreateFromQuaternion(m_rotation);
-//	Matrix transration = Matrix::CreateTranslation(m_position);
-//	Matrix world = rotation * transration;
-//	Matrix invertWorld = world.Invert();
-//
-//	// レイをローカル座標系に変換
-//	Ray unitRay{};
-//	unitRay.position = Vector3::Transform(ray.position, invertWorld);
-//	unitRay.direction = Vector3::TransformNormal(ray.direction, invertWorld);
-//	unitRay.direction.Normalize();
-//
-//	float distance = 0.0f;
-//	bool hitDetected = false;
-//	float closestDistance = FLT_MAX;
-//
-//	for (int i = 0; i < m_triangles.size(); i++)
-//	{
-//		Vector3 triangleNormal = m_triangles[i].normal;
-//		triangleNormal.Normalize();
-//
-//		// ★ 45度制限を削除 ★
-//		// float cosTheta = triangleNormal.Dot(-unitRay.direction);
-//		// if (cosTheta < 0.707f) continue;
-//
-//		// レイとポリゴンの衝突判定
-//		if (unitRay.Intersects(
-//			m_triangles[i].triangle[0],
-//			m_triangles[i].triangle[1],
-//			m_triangles[i].triangle[2],
-//			distance))
-//		{
-//			if (distance < closestDistance) // 最も近い衝突点を優先
-//			{
-//				closestDistance = distance;
-//				*hitPosition = Vector3{ unitRay.position + unitRay.direction * distance };
-//				*hitPosition = Vector3::Transform(*hitPosition, world);
-//
-//				*normal = Vector3::TransformNormal(m_triangles[i].normal, rotation);
-//				//*normal = normal->Normalize();
-//
-//				*polygonNo = i;
-//				hitDetected = true;
-//			}
-//		}
-//	}
-//
-//	return hitDetected;
-//}
 
 bool mylib::CollisionMesh::IntersectRay(
 	const DirectX::SimpleMath::Ray& ray,        // レイ
@@ -246,53 +181,7 @@ bool mylib::CollisionMesh::IntersectRay(
 		}
 	}
 
-	// 2. エッジに沿った補完レイを使った衝突判定
-	//for (int i = 0; i < m_triangles.size(); i++)
-	//{
-	//	const auto& triangle = m_triangles[i];
-	//	// 三角形の頂点情報から法線を計算
-	//	Vector3 A = triangle.triangle[0];
-	//	Vector3 B = triangle.triangle[1];
-	//	Vector3 C = triangle.triangle[2];
-	//	// 外積で法線を計算
-	//	Vector3 edgeAB = B - A;
-	//	Vector3 edgeAC = C - A;
-	//	Vector3 triangleNormal = edgeAB.Cross(edgeAC); // インスタンスでの呼び出し
-	//	triangleNormal.Normalize();  // 法線を正規化
-	//	// 各辺（エッジ）の中点を補完点として使う
-	//	for (int j = 0; j < 3; j++)
-	//	{
-	//		Vector3 edgeStart = triangle.triangle[j];
-	//		Vector3 edgeEnd = triangle.triangle[(j + 1) % 3];
-	//		// エッジの方向を求める
-	//		Vector3 edgeDirection = edgeEnd - edgeStart;
-	//		edgeDirection.Normalize(); // エッジの方向を正規化
-	//		// エッジの中点を求める
-	//		Vector3 edgeMidPoint = (edgeStart + edgeEnd) / 2.0f;
-	//		// エッジの中点に向かって補完レイを生成
-	//		Ray edgeRay{ edgeMidPoint, edgeDirection };
-	//		float edgeDistance = 0.0f;
-	//		// 補完レイと三角形の衝突判定
-	//		if (edgeRay.Intersects(
-	//			triangle.triangle[0],
-	//			triangle.triangle[1],
-	//			triangle.triangle[2],
-	//			edgeDistance))
-	//		{
-	//			if (edgeDistance < closestDistance) // 最も近い衝突点を優先
-	//			{
-	//				closestDistance = edgeDistance;
-	//				*hitPosition = Vector3{ edgeRay.position + edgeRay.direction * edgeDistance };
-	//				*hitPosition = Vector3::Transform(*hitPosition, world); // 世界座標系に戻す
-	//				// 回転行列を使用して法線を回転させる
-	//				*normal = Vector3::TransformNormal(triangleNormal, rotation);
-	//				*polygonNo = i;
-	//				hitDetected = true;
-	//			}
-	//		}
-	//	}
-	//}
-
+	
 	return hitDetected;
 }
 //-----------------------------------------------------

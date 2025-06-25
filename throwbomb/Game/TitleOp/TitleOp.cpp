@@ -284,13 +284,6 @@ void TitleOp::ResetBombs()
      {250.0f, -50.0f, -2000.0f},
      {0.0f, 0.0f, -5000.0f}
     };
-   /* std::vector<DirectX::SimpleMath::Vector3> positions = {
-     {-00.0f, 00.0f, -1000.0f},
-     {00.0f, 00.0f, -1000.0f},
-     {-0.0f, -0.0f, -2000.0f},
-     {0.0f, -0.0f, -2000.0f},
-     {0.0f, 0.0f, -5000.0f}
-    };*/
 
     for (const auto& pos : positions) {
         m_bombs.push_back(Bomb{ pos, false, false, 1.0f, -1.0f, 1.5f });
@@ -348,8 +341,6 @@ void TitleOp::CreateShader()
     cbDesc.ByteWidth = sizeof(ExplosionBufferData);
     cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    /*cbDesc.MiscFlags = 0;
-    cbDesc.StructureByteStride = 0;*/
 
     HRESULT hr = device->CreateBuffer(&cbDesc, nullptr, &m_CBufferexp);
     assert(SUCCEEDED(hr));

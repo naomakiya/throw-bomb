@@ -90,6 +90,10 @@ private:
     bool m_isHit;
     //全ての敵がいなくなった
     bool m_empty;
+    // 全てのパトロールの敵がいるか
+    bool m_isAllEnemiesDefeated;
+    // 全ての突進する敵がいるか
+    bool m_isAllStraighteningEnemiesDefeated;
     //壺ポジションを取得する変数
     DirectX::SimpleMath::Vector3 m_vacePos;
 };

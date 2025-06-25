@@ -4,7 +4,7 @@
 */
 #include "pch.h"
 #include"Framework/CommonResources.h"
-#include "Framework/Resources.h"
+#include "Framework/DeviceResources.h"
 #include"Game/Enemy/EnemyState.h"
 #include"Game/Enemy/State/EnmyExist.h"
 #include"Game/Enemy/State/EnemyMovement.h"

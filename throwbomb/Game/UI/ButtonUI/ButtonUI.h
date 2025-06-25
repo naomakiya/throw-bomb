@@ -3,7 +3,6 @@
 	@brief	ボタンに関するインターフェイスクラス
 */
 #pragma once
-#include <Libraries/MyLib/UserInterface.h>
 
 // 前方宣言
 class CommonResources;

@@ -9,10 +9,8 @@
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
-#include"Framework/Graphics.h"
 #include <cassert>
-#include "Framework/Graphics.h"
-#include <Framework/Resources.h>
+#include "Framework/DeviceResources.h"
 #include "Game/Screen.h"
 #include "Game/ResourceManager/ResourceManager.h"
 #include "TitleScene.h"

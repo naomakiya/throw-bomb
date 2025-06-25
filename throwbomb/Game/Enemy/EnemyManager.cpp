@@ -49,7 +49,9 @@ EnemyManager::EnemyManager(const std::vector<std::unique_ptr<Wall>>& wall, Playe
     m_straighteningEnemyMap{ straighteningEnemyMap },
     m_enemydashuModel{},
     m_empty{},
-    m_collisionMeshes{ collisionMeshes }
+    m_collisionMeshes{ collisionMeshes },
+    m_isAllStraighteningEnemiesDefeated{ false },
+    m_isAllEnemiesDefeated{ false }
 {
 
 }
@@ -94,6 +96,11 @@ void EnemyManager::Update(const float& elapsedTime)
     EnemyUpdate(elapsedTime);
    //“Ëi‚·‚é“G
     StraighteningEnemyUpdate(elapsedTime);
+
+    //‘S‚Ä‚Ì“G‚ª‚¢‚È‚¢‚È‚ç“G‚ª–³‚¢–³‚¢ó‘Ô‚ğƒIƒ“‚É‚·‚é
+    if (m_isAllEnemiesDefeated && m_isAllStraighteningEnemiesDefeated) {
+        m_empty = true;
+    }
 }
 
 //---------------------------------------------------------
@@ -131,7 +138,7 @@ void EnemyManager::Finalize()
 //---------------------------------------------------------
 void EnemyManager::EnemyUpdate(const float& elapsedTime)
 {
-    bool allEnemiesDefeated = true; // ‚·‚×‚Ä‚Ì“G‚ª“|‚³‚ê‚½‚©”»’è‚·‚éƒtƒ‰ƒO
+    m_isAllEnemiesDefeated = true; // ‚·‚×‚Ä‚Ì“G‚ª“|‚³‚ê‚½‚©”»’è‚·‚éƒtƒ‰ƒO
     //XV
     for (auto& enemy : m_enemy)
     {
@@ -139,7 +146,7 @@ void EnemyManager::EnemyUpdate(const float& elapsedTime)
         if (enemy->GetExist())
         {
             enemy->Update(elapsedTime);
-            allEnemiesDefeated = false; // ˆê‘Ì‚Å‚à¶‘¶‚µ‚Ä‚¢‚é‚È‚ç false ‚É‚·‚é
+            m_isAllEnemiesDefeated = false; // ˆê‘Ì‚Å‚à¶‘¶‚µ‚Ä‚¢‚é‚È‚ç false ‚É‚·‚é
         }
     }
 
@@ -172,8 +179,7 @@ void EnemyManager::EnemyUpdate(const float& elapsedTime)
             
         }
     }
-    // ‚·‚×‚Ä‚Ì“G‚ª“|‚³‚ê‚½ê‡Am_empty ‚ğ true ‚É‚·‚é
-    m_empty = allEnemiesDefeated;
+  
 }
 
 //---------------------------------------------------------
@@ -181,15 +187,15 @@ void EnemyManager::EnemyUpdate(const float& elapsedTime)
 //---------------------------------------------------------
 void EnemyManager::StraighteningEnemyUpdate(const float& elapsedTime)
 {
-    bool allStraighteningEnemiesDefeated = true;
+    m_isAllStraighteningEnemiesDefeated = true;
 
     // “Ëi“G‚ÌXV
     for (auto& straighteningEnemy : m_straighteningEnemy)
     {
         //¶‚«‚Ä‚¢‚é‚È‚ç
-        if (straighteningEnemy->GetExist() == true) {
+        if (straighteningEnemy->GetExist()) {
             straighteningEnemy->Update(elapsedTime);
-            allStraighteningEnemiesDefeated = false;
+            m_isAllStraighteningEnemiesDefeated = false;
         }
     }
 
@@ -223,8 +229,6 @@ void EnemyManager::StraighteningEnemyUpdate(const float& elapsedTime)
             }
         }
     }
-    // ‚·‚×‚Ä‚Ì“Ëi‚·‚é“G‚ª“|‚³‚ê‚½ê‡Am_empty ‚ğ true ‚É‚·‚é
-    m_empty = allStraighteningEnemiesDefeated;
 }
 
 //---------------------------------------------------------

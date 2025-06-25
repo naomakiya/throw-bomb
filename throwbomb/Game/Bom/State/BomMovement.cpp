@@ -5,7 +5,7 @@
 
 #include "pch.h"
 #include "Framework/CommonResources.h"
-#include "Framework/Resources.h"
+#include "Framework/DeviceResources.h"
 #include "Game/Bom/BomState.h"
 #include "Game/Bom/State/BomMovement.h"
 #include "Game/Player/PlayerState.h"

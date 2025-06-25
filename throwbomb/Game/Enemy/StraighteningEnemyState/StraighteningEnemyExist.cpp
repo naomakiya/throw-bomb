@@ -7,7 +7,7 @@
 #include "Game/Enemy/StraighteningEnemyState/StraighteningEnemySearch.h"
 #include"Game/Enemy/StraighteningEnemyState.h"
 #include"Framework/CommonResources.h"
-#include "Framework/Resources.h"
+#include "Framework/DeviceResources.h"
 #include"Game/Wall/Wall.h"
 #include <DirectXMath.h>
 #include <SimpleMath.h>

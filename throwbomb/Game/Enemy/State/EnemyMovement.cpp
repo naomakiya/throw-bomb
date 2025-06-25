@@ -7,7 +7,6 @@
 #include "Game/Enemy/EnemyState.h"
 #include "Framework/CommonResources.h"
 #include "Framework/DeviceResources.h"
-#include "Framework/Resources.h"
 #include "Game/Wall/Wall.h"
 #include "Libraries/MyLib/CollisionMesh.h"
 #include "Game/Enemy/State/EnemyTracking.h"

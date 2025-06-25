@@ -247,7 +247,10 @@ void PlayScene::Update(float elapsedTime)
 
 	//敵が全滅したらクリア
 	if (m_enemyManager->GetEmpty() && !m_isChangeScene){
-		RequestResultScene();
+		// シーンの変更を許可する
+		m_isChangeScene = true;
+		// フェイド用の時間を設定
+		m_fade->SetTime(0.0f);
 	}
 }
 
