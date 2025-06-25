@@ -187,9 +187,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Framework\Graph.h" />
     <ClInclude Include="Framework\LoadJson.h" />
-    <ClInclude Include="Framework\Vertex.h" />
     <ClInclude Include="Game\Bom\BomState.h" />
     <ClInclude Include="Game\Bom\State\BomExist.h" />
     <ClInclude Include="Game\Bom\State\BomExplosion.h" />
@@ -199,11 +197,8 @@
     <ClInclude Include="Game\Enemy\AvoidObjectPatrol.h" />
     <ClInclude Include="Game\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Enemy\EnemyState.h" />
-    <ClInclude Include="Framework\Animation.h" />
     <ClInclude Include="Framework\CommonResources.h" />
     <ClInclude Include="Framework\DeviceResources.h" />
-    <ClInclude Include="Framework\Graphics.h" />
-    <ClInclude Include="Framework\Resources.h" />
     <ClInclude Include="Framework\StepTimer.h" />
     <ClInclude Include="Game\Camera\Camera.h" />
     <ClInclude Include="Game\Collision\Collision.h" />
@@ -281,22 +276,16 @@
     <ClInclude Include="Libraries\MyLib\CollisionDebugRenderer.h" />
     <ClInclude Include="Libraries\MyLib\CollisionMesh.h" />
     <ClInclude Include="Libraries\MyLib\DebugString.h" />
-    <ClInclude Include="Libraries\MyLib\GridFloor.h" />
     <ClInclude Include="Libraries\MyLib\InputManager.h" />
     <ClInclude Include="Libraries\MyLib\MemoryLeakDetector.h" />
-    <ClInclude Include="Libraries\MyLib\UserInterface.h" />
     <ClInclude Include="Libraries\MyLib\Utils.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Framework\Animation.cpp" />
     <ClCompile Include="Framework\CommonResources.cpp" />
     <ClCompile Include="Framework\DeviceResources.cpp" />
-    <ClCompile Include="Framework\Graphics.cpp" />
     <ClCompile Include="Framework\LoadJson.cpp" />
-    <ClCompile Include="Framework\Resources.cpp" />
-    <ClCompile Include="Framework\Vertex.cpp" />
     <ClCompile Include="Game\Bom\BomState.cpp" />
     <ClCompile Include="Game\Bom\State\BomExist.cpp" />
     <ClCompile Include="Game\Bom\State\BomExplosion.cpp" />
@@ -368,9 +357,7 @@
     <ClCompile Include="Libraries\MyLib\CollisionDebugRenderer.cpp" />
     <ClCompile Include="Libraries\MyLib\CollisionMesh.cpp" />
     <ClCompile Include="Libraries\MyLib\DebugString.cpp" />
-    <ClCompile Include="Libraries\MyLib\GridFloor.cpp" />
     <ClCompile Include="Libraries\MyLib\InputManager.cpp" />
-    <ClCompile Include="Libraries\MyLib\UserInterface.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

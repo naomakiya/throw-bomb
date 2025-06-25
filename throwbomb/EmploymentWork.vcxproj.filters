@@ -71,9 +71,6 @@
     <Filter Include="Game\Collision">
       <UniqueIdentifier>{71aecb1e-9a9a-413b-ba26-9dd5d6db6b56}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Libraries\nol">
-      <UniqueIdentifier>{3e628e30-f4fe-4be1-b5a4-9f5d6c934b51}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\FBX">
       <UniqueIdentifier>{d2d33a2a-3304-4162-96bc-a577142e2572}</UniqueIdentifier>
     </Filter>
@@ -167,9 +164,6 @@
     <ClInclude Include="Libraries\MyLib\DebugString.h">
       <Filter>Libraries\MyLib</Filter>
     </ClInclude>
-    <ClInclude Include="Libraries\MyLib\GridFloor.h">
-      <Filter>Libraries\MyLib</Filter>
-    </ClInclude>
     <ClInclude Include="Libraries\MyLib\InputManager.h">
       <Filter>Libraries\MyLib</Filter>
     </ClInclude>
@@ -184,15 +178,6 @@
     </ClInclude>
     <ClInclude Include="Game\Player\State\PlayerIdling.h">
       <Filter>Game\PlayScene\Player\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Graphics.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Resources.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Animation.h">
-      <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Game\Floor\Floor.h">
       <Filter>Game\PlayScene\Floor</Filter>
@@ -248,19 +233,10 @@
     <ClInclude Include="Libraries\Microsoft\ReadData.h">
       <Filter>Libraries\Microsoft</Filter>
     </ClInclude>
-    <ClInclude Include="Framework\Graph.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Vertex.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Scene\GameOver.h">
       <Filter>Game\Sceen</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\MyLib\BinaryFile.h">
-      <Filter>Libraries\MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\MyLib\UserInterface.h">
       <Filter>Libraries\MyLib</Filter>
     </ClInclude>
     <ClInclude Include="Interface\IBomState.h">
@@ -435,9 +411,6 @@
     <ClCompile Include="Libraries\MyLib\DebugString.cpp">
       <Filter>Libraries\MyLib</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\MyLib\GridFloor.cpp">
-      <Filter>Libraries\MyLib</Filter>
-    </ClCompile>
     <ClCompile Include="Libraries\MyLib\InputManager.cpp">
       <Filter>Libraries\MyLib</Filter>
     </ClCompile>
@@ -446,15 +419,6 @@
     </ClCompile>
     <ClCompile Include="Game\Player\State\PlayerIdling.cpp">
       <Filter>Game\PlayScene\Player\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Graphics.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Resources.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Animation.cpp">
-      <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Game\Floor\Floor.cpp">
       <Filter>Game\PlayScene\Floor</Filter>
@@ -498,16 +462,10 @@
     <ClCompile Include="Game\Player\State\PlayerBomHand.cpp">
       <Filter>Game\PlayScene\Player\State</Filter>
     </ClCompile>
-    <ClCompile Include="Framework\Vertex.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Scene\GameOver.cpp">
       <Filter>Game\Sceen</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\MyLib\BinaryFile.cpp">
-      <Filter>Libraries\MyLib</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\MyLib\UserInterface.cpp">
       <Filter>Libraries\MyLib</Filter>
     </ClCompile>
     <ClCompile Include="Game\Bom\BomState.cpp">
