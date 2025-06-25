@@ -38,8 +38,9 @@ https://youtu.be/lQIoPupcg_M
 --------------------------------------------------
 【実行方法】
 1. Visual Studioでプロジェクトファイルを開く
-2. Release または Debug モードでビルド
-3. 出力された実行ファイル（例：EmploymentWork.exe）を実行  
+2.directxtk_desktop_2019ライブラリをNugetからダウンロード
+3. Release または Debug モードでビルド
+4. 出力された実行ファイル（例：EmploymentWork.exe）を実行  
 　または Visual Studio のデバッガーを使用して起動
 
 --------------------------------------------------
