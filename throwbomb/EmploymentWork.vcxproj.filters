@@ -612,7 +612,6 @@
     </Manifest>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Resources\Fonts\SegoeUI_18.spritefont">
       <Filter>Resources\Fonts</Filter>
     </None>
