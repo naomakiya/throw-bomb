@@ -1,5 +1,4 @@
 *.dds filter=lfs diff=lfs merge=lfs -text
-*.mp4 filter=lfs diff=lfs merge=lfs -text
 .lib filter=lfs diff=lfs merge=lfs -text
 DirectXTK.lib filter=lfs diff=lfs merge=lfs -text
 DirectXTKAudioWin7.lib filter=lfs diff=lfs merge=lfs -text
