@@ -2,21 +2,21 @@
   @file  EnemyMovement.h
   @brief 敵の移動クラス
 */
+
 #pragma once
 #ifndef ENEMY_MOVEMENT_DEFINED
 #define ENEMY_MOVEMENT_DEFINED
 #include "Interface/IEnemyState.h"
 #include "Interface/IPatrolStrategy.h"
+
 // 前方宣言
 class CommonResources;
 class EnemyState;
 class Wall;
 
-// A*アルゴリズムでのパス（経路）型
-using Path = std::vector<DirectX::SimpleMath::Vector3>;
-
 class EnemyMovement :public IEnemyState
 {
+    
 public:
     // スケールを取得する
     float GetScale() const { return m_scale; }
@@ -40,6 +40,7 @@ public:
     void SetPatrolStrategy(std::unique_ptr<IPatrolStrategy> strategy) {
         m_patrolStrategy = std::move(strategy);
     }
+
 public:
     // コンストラクタ
     EnemyMovement(EnemyState* enemyState, const std::vector<std::unique_ptr<Wall>>& wall, const std::vector<DirectX::SimpleMath::Vector3>& patrolPath);
@@ -78,6 +79,7 @@ public:
     void CheckCollisionWithPlayer();
     // 敵の同期
     void SyncWithEnemyState();
+
 private:
     // 共通リソース
     CommonResources* m_commonResources;
@@ -85,7 +87,9 @@ private:
     EnemyState* m_enemy;
     //壁
     const std::vector<std::unique_ptr<Wall>>& m_wall;
+    // 移動する位置
     std::unique_ptr<IPatrolStrategy> m_patrolStrategy;
+
 private:
     // バウンディングボックス
     DirectX::BoundingBox m_boundingBox;
@@ -113,10 +117,6 @@ private:
     float m_modelScale;
     // ゴール到着しきい値
     float goalArrivalThreshold;
-    bool m_isPaused;
-    float m_pauseTimer;
-    float m_pauseDuration;
-    float m_timeUntilNextPause;
-   
+
 };
 #endif		// ENEMYMOVEMENT_DEFINED

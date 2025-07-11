@@ -10,7 +10,7 @@
 #include "ResultScene.h"
 #include "GameOver.h"
 #include "Game/ResourceManager/ResourceManager.h"
-#include <Game/Sound/Sound.h>
+#include "Game/ResultParamete/ResultParamete.h"
 
 
 //---------------------------------------------------------
@@ -21,6 +21,7 @@ SceneManager::SceneManager()
 	m_currentScene{},
 	m_commonResources{},
 	m_resourceManager{},
+	m_resultParamete{},
 	m_number{0}
 {
 }
@@ -44,10 +45,8 @@ void SceneManager::Initialize(CommonResources* resources)
 	//リソース用ジェイソンのロード
 	m_resourceManager = std::make_unique<ResourceManager>();
 	m_resourceManager->loadFromJson("Resources/Json/Resource.json");
-
-	// シングルトンインスタンスを取得し、初期化
-	Sound::GetInstance().Initialize();
-
+	// リザルトパラメータ
+	m_resultParamete = std::make_unique<ResultParamete>();
 	ChangeScene(IScene::SceneID::TITLE);
 }
 
@@ -112,10 +111,10 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		m_currentScene = std::make_unique<PlayScene>(this);
 		break;
 	case IScene::SceneID::RESULT:
-		m_currentScene = std::make_unique<ResultScene>();
+		m_currentScene = std::make_unique<ResultScene>(this);
 		break;
 	case IScene::SceneID::GAMEOVER:
-		m_currentScene = std::make_unique<GameOver>(m_resourceManager.get());
+		m_currentScene = std::make_unique<GameOver>(this);
 		break;
 	default:
 		assert(!"SceneManager::CreateScene::シーン名が存在しません！");

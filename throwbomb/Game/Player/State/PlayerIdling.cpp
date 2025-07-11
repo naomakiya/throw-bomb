@@ -2,6 +2,7 @@
   @file  PlayerIdling.cpp
   @brief プレイヤー待機状態クラス
 */
+
 #include "pch.h"
 #include"Framework/CommonResources.h"
 #include "Framework/DeviceResources.h"
@@ -10,6 +11,7 @@
 #include"Game/Player/State/PlayerBomHand.h"
 #include"Game/Player/State/PlayerMovement.h"
 #include"Game/Bom/BomState.h"
+#include <Game/ResourceManager/ResourceManager.h>
 
 //---------------------------------------------------------
 // コンストラクタ
@@ -56,18 +58,20 @@ void PlayerIdling::Initialize(CommonResources* resources)
 	fx->SetDirectory(L"Resources/Models/Player");
 
 	//モデルをロードする
-	m_playerface = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Player/face.cmo", *fx);
-	m_playerfaceBody = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Player/Body.cmo", *fx);
-	m_playerHandL = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Player/PlayerHand.cmo", *fx);
-	m_playerHandR = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Player/PlayerHand.cmo", *fx);
-
+	m_playerface =	   DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerFace").c_str(), *fx);
+	m_playerfaceBody = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerBody").c_str(), *fx);
+	m_playerHandL =	   DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerHand").c_str(), *fx);
+	m_playerHandR =    DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerHand").c_str(), *fx);
+	//　事前更新
 	PreUpdate();
 }
 
 // 事前更新する
 void PlayerIdling::PreUpdate()
 {
+	// 位置情報の更新
 	m_position = m_player->GetPosition();
+	// 現在の向いている方向
 	m_rotate = m_player->GetAngle();
 
 }
@@ -82,14 +86,16 @@ void PlayerIdling::Update(const float& elapsedTime)
 	UNREFERENCED_PARAMETER(elapsedTime);
 
 	//事前に必要な情報を獲得する
-	this->PreUpdate();
+	PreUpdate();
+
 	//時間経過
 	m_time += elapsedTime;
+
 	// キーボードステートを取得する
 	DirectX::Keyboard::State keyboardState = DirectX::Keyboard::Get().GetState();
+
 	//矢印キーを押したら移動状態に変える
-	if (keyboardState.Up || keyboardState.Down || keyboardState.Left || keyboardState.Right)
-	{
+	if (keyboardState.Up || keyboardState.Down || keyboardState.Left || keyboardState.Right){
 		m_player->ChangeState(m_player->GetPlayerMovement());
 	}
 
@@ -116,17 +122,17 @@ void PlayerIdling::Render(const DirectX::SimpleMath::Matrix& view, const DirectX
 	float faceSwayAngle = std::sin(m_time * 1.5f) * 0.35f;
 	Quaternion faceRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, faceSwayAngle);
 
-	// オフセットの定義
+	// 手のオフセットの定義
 	Vector3 handBaseOffsetL(0.7f, m_hand, 0.1f);
 	Vector3 handBaseOffsetR(-0.7f, m_hand, 0.1f);
-
+	// 足のオフセットの定義
 	Vector3 legOffsetL(0.5f, -0.5f, 0.0f);
 	Vector3 legOffsetR(-0.5f, -0.5f, 0.0f);
 
 	// プレイヤーの回転に応じてオフセットを変換
 	float handAngle = -sin(m_time * 1.5f) * 0.25f; // 回転速度を調整
 	float handRadius = 0.7f; // 円の半径
-
+	// 回転角度の計算
 	Vector3 handOffsetL(handRadius * std::cos(handAngle), 0, handRadius * std::sin(handAngle));
 	Vector3 handOffsetR(handRadius * std::cos(handAngle + DirectX::XM_PI), 0.0f, handRadius * std::sin(handAngle + DirectX::XM_PI));
 
@@ -139,19 +145,19 @@ void PlayerIdling::Render(const DirectX::SimpleMath::Matrix& view, const DirectX
 	// ワールド行列の計算
 	Matrix faceWorld = Matrix::CreateScale(m_modelScale) * Matrix::CreateFromQuaternion(m_rotate * faceRotation) * Matrix::CreateTranslation(m_position);
 	Matrix bodyWorld = Matrix::CreateScale(m_modelScale) * Matrix::CreateFromQuaternion(m_rotate) * Matrix::CreateTranslation(m_position);
-
+	// 手の大きさ
 	Matrix handScale = Matrix::CreateScale(m_modelScale);
+	// 角度の計算
 	Matrix handRotation = Matrix::CreateFromQuaternion(faceRotation * m_position);
-
+	// 手のワールド行列の計算
 	Matrix handL = handScale * handRotation * Matrix::CreateTranslation(m_position + handOffsetL);
 	Matrix handR = handScale * handRotation * Matrix::CreateTranslation(m_position + handOffsetR);
-
+	// 足のワールド行列の計算
 	Matrix legL = handScale * Matrix::CreateTranslation(m_position + legOffsetL);
 	Matrix legR = handScale * Matrix::CreateTranslation(m_position + legOffsetR);
-
-	if (!m_player->GetHitEnemy())
-	{
-		// モデルの描画
+	// 敵に触れたか
+	if (!m_player->GetHitEnemy()){
+		// 描画する
 		m_playerface->Draw(context, *states, faceWorld, view, projection);
 		m_playerfaceBody->Draw(context, *states, bodyWorld, view, projection);
 		m_playerHandL->Draw(context, *states, handL, view, projection);
@@ -159,8 +165,8 @@ void PlayerIdling::Render(const DirectX::SimpleMath::Matrix& view, const DirectX
 		m_playerHandL->Draw(context, *states, legL, view, projection);
 		m_playerHandR->Draw(context, *states, legR, view, projection);
 	}
-	else
-	{
+	else{
+		// 透明状態で描画する
 		m_player->EnemyHitFlashing(*m_playerface, faceWorld, view, projection);
 		m_player->EnemyHitFlashing(*m_playerfaceBody, bodyWorld, view, projection);
 		m_player->EnemyHitFlashing(*m_playerHandL, handL, view, projection);

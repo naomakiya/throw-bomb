@@ -2,6 +2,7 @@
   @file  BomState.cpp
   @brief ボムの状態クラス
 */
+
 #include "pch.h"
 #include"Framework/CommonResources.h"
 #include"Game/Bom/BomState.h"
@@ -85,6 +86,7 @@ void BomState::ChangeState(IBomState* newBomState)
 //---------------------------------------------------------
 void BomState::Update(const float& elapsedTime)
 {
+	//時間経過
 	m_explosionTimer -= elapsedTime;
 	//現在の状態の更新
 	m_currentState->Update(elapsedTime);

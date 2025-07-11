@@ -32,7 +32,16 @@ public:
     bool GetEmpty() const { return m_empty; }
     //破壊された壺の場所の取得
     void SetVacePos(DirectX::SimpleMath::Vector3 vasePos);
-
+    // 合計の敵の数
+    int GetSumEnemy() { return m_sumEnemy; }
+    // 倒した数
+    int GetDefeatedEnemies() { return m_defeatedEnemies; }
+    // 敵の数
+    int GetEnemyes() { return m_enemyes; }
+    // 突進の敵の数
+    int GetStraighteningEnemys(){ return m_straighteningEnemys; }
+    //　残りの敵の数
+    int GetRemainingEnemies() { return m_remainingEnemies; }
  public:
     // コンストラクタ
     EnemyManager(const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player, std::vector<DirectX::SimpleMath::Vector3> enemyMap, const std::vector<DirectX::SimpleMath::Vector3> patrolPath, std::vector<DirectX::SimpleMath::Vector3> straighteningEnemyMap, std::vector<std::unique_ptr<mylib::CollisionMesh>>& collisionMeshes);
@@ -80,10 +89,20 @@ private:
     std::vector<DirectX::SimpleMath::Vector3> m_patrolPath;
     // コリジョンメッシュクラス
     std::vector<std::unique_ptr<mylib::CollisionMesh>>& m_collisionMeshes;
-    // スケール
-    float m_scale;
     // 位置
     DirectX::SimpleMath::Vector3 m_position;
+    // スケール
+    float m_scale;
+    // 敵の数
+    int m_enemyes;
+    // 突進する敵の数
+    int m_straighteningEnemys;
+    // 敵の合計
+    int m_sumEnemy;
+    // 倒した敵の数
+    int m_defeatedEnemies;    
+    // 残りの敵の数
+    int m_remainingEnemies;
     // 生存
     bool m_exist;
     // ヒットフラグ

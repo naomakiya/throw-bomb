@@ -14,8 +14,8 @@
 class TextureResource
 {
 public:
-    void addResource(const std::string& name, const std::string& path);
-    std::string getResource(const std::string& name) const;
+    void AddResource(const std::string& name, const std::string& path);
+    std::string GetResource(const std::string& name) const;
 
 private:
     std::unordered_map<std::string, std::string> m_resources;

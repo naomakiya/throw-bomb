@@ -2,9 +2,10 @@
     @file	Dithering.cpp
     @brief	ディザリングクラス
 */
+
 #include "pch.h"
-#include "Dithering.h"
 #include "Framework/DeviceResources.h"
+#include "Dithering.h"
 #include <Libraries/Microsoft/ReadData.h>
 
 //---------------------------------------------------------

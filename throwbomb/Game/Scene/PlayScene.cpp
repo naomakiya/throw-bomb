@@ -25,6 +25,7 @@
 #include "Game/UI/Fade.h"
 #include "Game/UI/Number/Number.h"
 #include "Game/Sound/Sound.h"
+#include "Game/ResultParamete/ResultParamete.h"
 
 //nlohmann/json.hppライブラリ
 #include"nlohmann/json.hpp"
@@ -66,7 +67,8 @@ PlayScene::PlayScene(SceneManager* sceneManager)
 	m_isDamageHeart{false},
 	m_downheartCoolTimer{0.0f},
 	m_isrotateLeftPressed{false},
-	m_isrotateRightPressed{false}
+	m_isrotateRightPressed{false},
+	m_sound{}
 {
 	
 }
@@ -109,7 +111,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	std::string numberString = std::to_string(number);
 
 	// マップ情報をJSONファイルから読み込んで作成
-	loadMapJSON(ResourceManager::getStagePath(numberString).c_str());
+	LoadMapJSON(ResourceManager::GetStagePath(numberString).c_str());
 
 	// クラス生成
 	CreateClass();
@@ -119,7 +121,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
 	//スカイドーム
-	m_sky = Model::CreateFromCMO(device, ResourceManager::getModelPath("SkyDome").c_str(), *fx);
+	m_sky = Model::CreateFromCMO(device, ResourceManager::GetModelPath("SkyDome").c_str(), *fx);
 
 
 	// 音量の読み込み
@@ -128,12 +130,13 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_bgmVolume = json.GetJson()["BGM"].value("Volume", 0.0f);
 	//　SEの音量の設定
 	m_seVolume = json.GetJson()["SE"].value("Volume", 0.0f);
-	// サウンドのインスタンスの獲得
-	Sound::GetInstance().Initialize();
+
+	m_sound = std::make_unique<Sound>();
+	m_sound->Initialize();
 	// BGMの再生
-	Sound::GetInstance().PlayBGM(ResourceManager::getBGMPath("PlayBGM").c_str(), true);
+	m_sound->PlayBGM(ResourceManager::GetBGMPath("PlayBGM").c_str(), true);
 	// 音量の設定
-	Sound::GetInstance().SetVolume(m_bgmVolume);
+	m_sound->SetVolume(m_bgmVolume);
 }
 
 //---------------------------------------------------------
@@ -145,31 +148,22 @@ void PlayScene::Update(float elapsedTime)
 
 	//時間経過
 	m_elapsedTime = elapsedTime;
-	
 	// プレイヤーを更新する
 	m_player->Update(elapsedTime);
-
 	//Uiの更新
 	m_ui->Update();
-
 	//カメラの回転キー
 	CameraRotate();
-
 	//カメラ更新
 	m_camera->UpdateCameraRotation(elapsedTime);
-
 	// カメラの位置をプレイヤーの位置に連動させる
 	m_camera->Update(m_player->GetPosition());
-
 	// ビューの情報の取得
 	m_view = m_camera->GetViewMatrix();
-
 	//敵の更新
 	m_enemyManager->Update(elapsedTime);
-
 	//Rayを使用してコリジョンメッシュと衝突判定をとる(プレイヤー）
 	CheckPlayerCollisionMesh();
-
 	//Rayを使用してコリジョンメッシュと衝突判定をとる(ボム）
 	for (int i = 0; i < PlayerState::BOMMAX; i++){
 		//	ボムが有るのなら判定をする
@@ -227,31 +221,43 @@ void PlayScene::Update(float elapsedTime)
 			m_isDamageHeart = false;
 		}
 	}
-
-	// ゴールに触れた場合はシーンを変更
-	if (mylib::Collision::BoundingCheckCollision(m_player->GetBoundingBox(), m_goal->GetBoundingSphere())){
+	//敵が全滅したらクリア
+	if (m_enemyManager->GetEmpty()) {
+		// シーンが変更されてないなら呼ぶ
+		if (!m_isChangeScene) {
+			// フェイド用の時間を設定
+			m_fade->SetTime(0.0f);
+		}
 		// シーンの変更を許可する
 		m_isChangeScene = true;
-		// フェイド用の時間を設定
-		m_fade->SetTime(0.0f);
+	}
+	// ゴールに触れた場合はシーンを変更
+	if (mylib::Collision::BoundingCheckCollision(m_player->GetBoundingBox(), m_goal->GetBoundingSphere())){
+		// シーンが変更されてないなら呼ぶ
+		if (!m_isChangeScene) {
+			// フェイド用の時間を設定
+			m_fade->SetTime(0.0f);
+		}
+		// シーンの変更を許可する
+		m_isChangeScene = true;
+		
 	}
 
 	// ハートが全て空になったらリザルトシーンに遷移する
 	if (m_ui->AreHeartsEmpty() && !m_isEmptyHart){
-		RequestResultScene();
+		// ハートが空になった
+		m_isEmptyHart = true;
+		// フェイド用の時間設定
+		m_fade->SetTime(0.0f);
 	}
 	// 時間制限になったらシーンの変更
 	if (m_ui->GetNumber()->GetTime() <= 0.0f && !m_isEmptyHart){
-		RequestResultScene();
-	}
-
-	//敵が全滅したらクリア
-	if (m_enemyManager->GetEmpty() && !m_isChangeScene){
-		// シーンの変更を許可する
-		m_isChangeScene = true;
-		// フェイド用の時間を設定
+		// ハートが空になった
+		m_isEmptyHart = true;
+		// フェイド用の時間設定
 		m_fade->SetTime(0.0f);
 	}
+	
 }
 
 
@@ -310,7 +316,6 @@ void PlayScene::Render()
 		m_fade->Render(m_ui.get());
 	}
 
-
 }
 
 //---------------------------------------------------------
@@ -325,7 +330,7 @@ void PlayScene::Finalize()
 	m_ui.reset();
 	m_goal.reset();
 	m_enemyManager.reset();
-	Sound::GetInstance().Finalize();
+	m_sound->Finalize();
 
 }
 
@@ -379,7 +384,7 @@ void PlayScene::CreateClass()
 //---------------------------------------------------------
 //ジェイソンの読み込み
 //---------------------------------------------------------
-void PlayScene::loadMapJSON(const char* filename)
+void PlayScene::LoadMapJSON(const char* filename)
 {
 	assert(filename);
 
@@ -478,7 +483,14 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 {
 	// シーン変更がある場合
 	if (m_isChangeScene){
-		return IScene::SceneID::RESULT;
+		//フェイドを呼び出す
+		m_fade->Render(m_ui.get());
+		
+		//1.5秒以上経ったらシーンを変える
+		if (m_fade->GetTime() >= 1.5f) {
+			m_sceneManager->GetResultParamete()->SetResultParamete(m_enemyManager->GetDefeatedEnemies(), m_enemyManager->GetSumEnemy(), m_ui->GetNumber()->GetTime());
+			return IScene::SceneID::RESULT;
+		}
 	}
 	// ハートが空なら
 	if (m_isEmptyHart){
@@ -486,7 +498,9 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 		m_fade->Render(m_ui.get());
 		//1.5秒以上経ったらシーンを変える
 		if (m_fade->GetTime() >= 1.5f){
-			return IScene::SceneID::TITLE;
+			m_sceneManager->GetResultParamete()->SetGameOverResultParamete(m_enemyManager->GetRemainingEnemies(), m_enemyManager->GetSumEnemy(), m_ui->GetNumber()->GetTime());
+			m_sound->Finalize();
+			return IScene::SceneID::GAMEOVER;
 		}	
 	}
 	// シーン変更がない場合
@@ -595,13 +609,4 @@ void PlayScene::RenderSkyModel()
 	m_sky->Draw(context, *states, world, m_view, m_projection);
 }
 
-//---------------------------------------------------------
-// リザルトチェンジ用の変数の設定
-//---------------------------------------------------------
-void PlayScene::RequestResultScene()
-{
-	// ハートが空になった
-	m_isEmptyHart = true;
-	// フェイド用の時間設定
-	m_fade->SetTime(0.0f);
-}
+

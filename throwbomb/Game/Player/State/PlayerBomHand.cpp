@@ -13,6 +13,7 @@
 #include "Game/Wall/Wall.h"
 #include "Game/Camera/Camera.h"
 #include "Game/Bom/BomState.h"
+#include "Game/ResourceManager/ResourceManager.h"
 
 //---------------------------------------------------------
 // コンストラクタ
@@ -51,11 +52,10 @@ void PlayerBomHand::Initialize(CommonResources* resources)
 	fx->SetDirectory(L"Resources/Models/Player");
 
 	//モデルをロードする
-	m_playerface = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Player/face.cmo", *fx);
-	m_playerfaceBody = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Player/Body.cmo", *fx);
-	m_playerHandL = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Player/PlayerHand.cmo", *fx);
-	m_playerHandR = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Player/PlayerHand.cmo", *fx);
-
+	m_playerface = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerFace").c_str(), *fx);
+	m_playerfaceBody = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerBody").c_str(), *fx);
+	m_playerHandL = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerHand").c_str(), *fx);
+	m_playerHandR = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerHand").c_str(), *fx);
 }
 
 //---------------------------------------------------------
@@ -63,7 +63,9 @@ void PlayerBomHand::Initialize(CommonResources* resources)
 //---------------------------------------------------------
 void PlayerBomHand::PreUpdate()
 {
+	// 前状態の位置情報の更新
 	m_position = m_player->GetPosition();
+	// 前状態の方向の更新
 	m_rotate = m_player->GetAngle();
 	
 }
@@ -74,10 +76,12 @@ void PlayerBomHand::PreUpdate()
 void PlayerBomHand::Update(const float& elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
+
 	//時間経過
 	m_time += elapsedTime;
 	// キーボードの状態を取得する
 	const auto& kbState = m_commonResources->GetInputManager()->GetKeyboardState();
+
 	Vector3 velocity = Vector3::Zero;
 	//現在の位置を獲得する
 	m_position = m_player->GetPosition();
@@ -98,30 +102,34 @@ void PlayerBomHand::Update(const float& elapsedTime)
 
 
 	// 移動方向がある場合
-	if (velocity.LengthSquared() > 0) 
-	{
-		velocity.Normalize(); // ベクトルを正規化
+	if (velocity.LengthSquared() > 0) {
+		// ベクトルを正規化
+		velocity.Normalize(); 
 		Vector3 vel = { 2.5f,0.0f,2.5f };
 
 		// カメラの回転を取得
-		Quaternion cameraRotation = m_camera->GetRotation(); // カメラの回転を取得
+		Quaternion cameraRotation = m_camera->GetRotation();
+
 		// プレイヤーの移動方向をカメラの向きに変換
 		Vector3 moveDirection = Vector3::Transform(velocity, cameraRotation);
 
 		// プレイヤーの向きを更新
 		float yaw = atan2f(moveDirection.x, moveDirection.z);
-		m_rotate = Quaternion::CreateFromYawPitchRoll(yaw, 0.0f, 0.0f); // プレイヤーを向かせる
+
+		// プレイヤーを向かせる
+		m_rotate = Quaternion::CreateFromYawPitchRoll(yaw, 0.0f, 0.0f); 
 
 		// 移動量を計算
-		moveDirection *= vel; // 加速後の速度を移動に適用
+		moveDirection *= vel; 
 
 		// プレイヤーの位置を更新
 		m_position += moveDirection * elapsedTime;
 	}
 
 	// プレイヤーの位置を更新
-	this->PostUpdate();
-
+	m_player->SetPosition(m_position);
+	// プレイヤーの向きを更新
+	m_player->SetAngle(m_rotate);
 }
 
 //---------------------------------------------------------
@@ -145,7 +153,12 @@ void PlayerBomHand::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 	
+	//壁になどの触れた後の位置情報を取得
+	m_position = m_player->GetPosition();
+
+	// 手の位置
 	m_handHeight = 0.75f;
+
 	// 顔の揺れを計算
 	float faceSwayAngle = std::sin(m_time * 1.5f) * 0.35f;
 	Quaternion faceRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, faceSwayAngle);
@@ -177,8 +190,8 @@ void PlayerBomHand::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	Matrix legL = Matrix::CreateScale(0.0085f) * Matrix::CreateFromQuaternion(m_rotate) * Matrix::CreateTranslation(m_position + legOffsetL);
 	Matrix legR = Matrix::CreateScale(0.0085f) * Matrix::CreateFromQuaternion(m_rotate) * Matrix::CreateTranslation(m_position + legOffsetR);
 
-	if(!m_player->GetHitEnemy())
-	{
+	// 当たっていたら透明にする
+	if(!m_player->GetHitEnemy()){
 		// モデルを表示する
 		m_playerface->Draw(context, *states, faceWorld, view, projection);
 		m_playerfaceBody->Draw(context, *states, bodyWorld, view, projection);
@@ -187,8 +200,7 @@ void PlayerBomHand::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 		m_playerHandL->Draw(context, *states, legL, view, projection);
 		m_playerHandR->Draw(context, *states, legR, view, projection);
 	}
-	else
-	{
+	else{
 		m_player->EnemyHitFlashing(*m_playerface, faceWorld, view, projection);
 		m_player->EnemyHitFlashing(*m_playerfaceBody, bodyWorld,view,projection);
 	}
@@ -208,8 +220,10 @@ void PlayerBomHand::Finalize()
 void PlayerBomHand::Movement(const float& elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
+
 	// キーボードステートを取得する
 	DirectX::Keyboard::State kbState = DirectX::Keyboard::Get().GetState();
+
 	// 速さ
 	Vector3 velocity = Vector3::Zero;
 

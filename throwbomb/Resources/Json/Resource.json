@@ -22,7 +22,8 @@
         "TitleName"      : "Resources/Textures/Title.png",
         "Clear"          : "Resources/Textures/Clear.png",
         "ReTry"          : "Resources/Textures/Retry.png",
-        "Select"          : "Resources/Textures/SelectButton.png",
+        "Select"         : "Resources/Textures/SelectButton.png",
+        "GameOver"       : "Resources/Textures/GameOver.png",
         "Option"         : "Resources/Textures/Optiom.png",
         "TitleButton"    : "Resources/Textures/TitleButton.png",
         "Cave"           : "Resources/Textures/cave.png",
@@ -34,9 +35,14 @@
         "Frame"          : "Resources/Textures/Frame.png",
         "Boms"           : "Resources/Textures/Boms.png",
         "ExclamationMark": "Resources/Textures/exclamationMark.png",
+        "Explosion"      : "Resources/Textures/Explosion.jpg",
+        "Slash"          : "Resources/Textures/slash.png",
+        "RemainingEnemy" : "Resources/Textures/RemainingEnemy.png",
+        "Score"          : "Resources/Textures/Score.png",
         "1"              : "Resources/Textures/1.png",
         "2"              : "Resources/Textures/2.png",
-        "3"              : "Resources/Textures/3.png"
+        "3"              : "Resources/Textures/3.png",
+        "A"              : "Resources/Textures/AScore.png"
 
 
     },
@@ -52,5 +58,8 @@
         "1": "Resources/Json/1.json",
         "2": "Resources/Json/2.json",
         "3": "Resources/Json/3.json"
+    },
+    "ResultParamete": {
+        "ResultParamete": "Resources/Json/ResultParamete.json"
     }
 }

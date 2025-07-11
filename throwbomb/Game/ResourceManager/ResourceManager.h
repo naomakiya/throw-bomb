@@ -15,6 +15,8 @@
 #include "BGMResource.h"
 #include "SEResource.h"
 #include "StageResource.h"
+#include "ResultParameteResource.h"
+
 using json = nlohmann::json;
 
 // リソースマネージャークラス
@@ -22,11 +24,12 @@ class ResourceManager
 {
 public:
     
-    ModelResource& getModelResource() { return modelResource_; }
-    TextureResource& getTextureResource() { return textureResource_; }
-    BGMResource& getBGMResource() { return bgmResource_; }
-    SEResource& getSEResource() { return seResource_; }
-    StageResource& getStageResource() { return stageResource; }
+    ModelResource& GetModelResource() { return m_modelResource; }
+    TextureResource& GetTextureResource() { return m_textureResource; }
+    BGMResource& GetBGMResource() { return m_bgmResource; }
+    SEResource& GetSEResource() { return m_seResource; }
+    StageResource& GetStageResource() { return m_stageResource; }
+    ResultParameteResource& GetResultParamete(){ return m_resultParameteResource; }
     
 
     // シングルトンインスタンスの取得
@@ -58,52 +61,55 @@ public:
                 std::string path = namePathPair.value();       // リソースのパス（例: "Model/FloorObject"）
 
                 if (type == "Model") {
-                    modelResource_.addResource(name, path);
+                    m_modelResource.AddResource(name, path);
                 }
                 else if (type == "Texture") {
-                    textureResource_.addResource(name, path);
+                    m_textureResource.AddResource(name, path);
                 }
                 else if (type == "BGM") {
-                    bgmResource_.addResource(name, path);
+                    m_bgmResource.AddResource(name, path);
                 }
                 else if (type == "SE") {
-                    seResource_.addResource(name, path);
+                    m_seResource.AddResource(name, path);
                 }
                 else if (type == "Stage") {
-                    stageResource.addResource(name, path);
+                    m_stageResource.AddResource(name, path);
+                }
+                else if (type == "ResultParamete"){
+
                 }
             }
         }
     }
 
     // 指定したモデルのパスを取得するメソッドを追加
-    static std::wstring getModelPath(const std::string& name) 
+    static std::wstring GetModelPath(const std::string& name) 
     {
-        std::string path = modelResource_.getResource(name);
+        std::string path = m_modelResource.GetResource(name);
         return std::wstring(path.begin(), path.end());  // std::string から std::wstring への変換
     }
     // 指定したテクスチャーのパスを取得するメソッドを追加
-    static std::wstring getTexturePath(const std::string& name) 
+    static std::wstring GetTexturePath(const std::string& name) 
     {
-        std::string path = textureResource_.getResource(name);
+        std::string path = m_textureResource.GetResource(name);
         return std::wstring(path.begin(), path.end());  // std::string から std::wstring への変換
     }
     // 指定したBGMのパスを取得するメソッドを追加
-    static std::string getBGMPath(const std::string& name)
+    static std::string GetBGMPath(const std::string& name)
     {
-        return bgmResource_.getResource(name);
+        return m_bgmResource.GetResource(name);
         //return std::wstring(path.begin(), path.end());  // std::string から std::wstring への変換
     }
     // 指定したSEのパスを取得するメソッドを追加
-    static std::wstring getSEPath(const std::string& name)
+    static std::string GetSEPath(const std::string& name)
     {
-        std::string path = seResource_.getResource(name);
-        return std::wstring(path.begin(), path.end());  // std::string から std::wstring への変換
+        return m_seResource.GetResource(name);
+        //return std::wstring(path.begin(), path.end());  // std::string から std::wstring への変換
     }
     // 指定したSEのパスを取得するメソッドを追加
-    static std::string getStagePath(const std::string& name)
+    static std::string GetStagePath(const std::string& name)
     {
-        return stageResource.getResource(name);
+        return m_stageResource.GetResource(name);
     }
 
 private:
@@ -111,9 +117,10 @@ private:
     static std::unique_ptr<ResourceManager> instance ;
     static std::mutex mutex;
 
-    static ModelResource modelResource_;
-    static TextureResource textureResource_;
-    static BGMResource bgmResource_;
-    static SEResource seResource_;
-    static StageResource stageResource;
+    static ModelResource m_modelResource;
+    static TextureResource m_textureResource;
+    static BGMResource m_bgmResource;
+    static SEResource m_seResource;
+    static StageResource m_stageResource;
+    static ResultParameteResource m_resultParameteResource;
 };

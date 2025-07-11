@@ -31,9 +31,11 @@ public:
      void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection) override;
      // 後処理を行う
      void Finalize() override;
+
 private:
      //衝突判定
-     void CheckHit(DirectX::BoundingBox boundingBox,const bool IsWall);
+     void HitCheck(DirectX::BoundingBox boundingBox,const bool IsWall);
+
 private:
     // 共通リソース
     CommonResources* m_commonResources;

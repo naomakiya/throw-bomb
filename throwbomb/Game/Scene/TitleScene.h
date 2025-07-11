@@ -13,6 +13,7 @@
 class CommonResources;
 class UI;
 class TitleOp;
+class Sound;
 
 class TitleScene final :  public IScene
 {
@@ -66,7 +67,8 @@ private:
 	std::unique_ptr<Fade> m_fade;
 	// タイトルOP
 	std::unique_ptr<TitleOp> m_TOp;
-
+	// 音
+	std::unique_ptr<Sound> m_sound;
 	// テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_space;
 	// テクスチャ

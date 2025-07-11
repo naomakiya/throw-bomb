@@ -11,7 +11,7 @@
 
 class CommonResources;
 class Dithering;
-
+class Sound;
 
 class TitleOp
 {
@@ -70,11 +70,13 @@ private:
 		const DirectX::XMFLOAT3& worldPos,
 		const DirectX::XMMATRIX& view,
 		const DirectX::XMMATRIX& projection);
-	private:
+
+private:
 	CommonResources* m_commonResources;
 	std::unique_ptr<Dithering> m_dithering;
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
-
+	// ‰¹
+	std::unique_ptr<Sound> m_sound;
 	std::unique_ptr<DirectX::Model> m_bomModel;
 	std::unique_ptr<DirectX::Model> m_explosionSphere;
 

@@ -6,14 +6,16 @@
 #include "pch.h"
 #include "Framework/CommonResources.h"
 #include "Framework/DeviceResources.h"
+#include "Libraries/MyLib/CollisionDebugRenderer.h"
+#include "Libraries/MyLib/DebugString.h"
+#include "Game/ResourceManager/ResourceManager.h"
 #include "Game/Bom/BomState.h"
 #include "Game/Bom/State/BomMovement.h"
 #include "Game/Player/PlayerState.h"
 #include "Game/Bom/State/BomExplosion.h"
 #include "Game/Wall/Wall.h"
-#include "Game/ResourceManager/ResourceManager.h"
-#include "Libraries/MyLib/CollisionDebugRenderer.h"
-#include "Libraries/MyLib/DebugString.h"
+
+
 
 //---------------------------------------------------------
 // コンストラクタ
@@ -25,7 +27,7 @@ BomMovement::BomMovement(BomState* bomState,PlayerState* playerState, const std:
 	,m_wall(wall)
 	,m_position{}
 	,m_velocity{}
-	,m_gravity(0.0f, GravityY, 0.0f)
+	,m_gravity(0.0f, BomState::GRAVITY, 0.0f)
 	,m_isBounce(false)
 {
 	
@@ -52,10 +54,10 @@ void BomMovement::Initialize(CommonResources* resources)
 	std::unique_ptr<DirectX::DX11::EffectFactory> fx = std::make_unique<DirectX::DX11::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
 	//モデルをロードする
-	m_bomModel = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("Bom").c_str(), *fx);
+	m_bomModel = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("Bom").c_str(), *fx);
 	// バウディングスフィアの設定
 	m_boundingSphere.Center = m_position;
-	m_boundingSphere.Radius = BoundingSphereRadius;
+	m_boundingSphere.Radius = BomState::BOUNDINGSPHERERADIUS;
 
 #ifdef _DEBUG	// デバック時実行
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
@@ -69,13 +71,18 @@ void BomMovement::Initialize(CommonResources* resources)
 //---------------------------------------------------------
 void BomMovement::PreUpdate()
 {
+	//現在の位置を取得
 	m_position = m_bomState->GetPosition();
-	m_bomState->SetExplosionTimer(CountdownTime);
+	// カウントダウンの時間を設定
+	m_bomState->SetExplosionTimer(COUNTDOWNTIME);
+	// 現在向いている方向の取得
 	Projection(m_player->GetForwardDirection());
+	// 速度の設定
 	m_bomState->SetVelocity(m_velocity);
+	// バウンスをしていないに設定
 	m_bomState->SetBounce(false);
+	// 現在の状態を移動にする
 	m_bomState->SetBomPresent(BomState::BomtPresent::MOVEMENT);
-	
 }
 
 //---------------------------------------------------------
@@ -89,8 +96,8 @@ void BomMovement::Projection(const DirectX::SimpleMath::Vector3& playerForwardDi
 	float angleRad = DirectX::XMConvertToRadians(angleDeg);
 
 	// 初速度ベクトルの計算（水平方向と垂直方向の成分）
-	float vx = LaunchSpeed * std::cos(angleRad);           // 水平方向の速度成分
-	float vy = LaunchSpeed * std::sin(angleRad);           // 垂直方向の速度成分
+	float vx = LAUNCHSPEED * std::cos(angleRad);           // 水平方向の速度成分
+	float vy = LAUNCHSPEED * std::sin(angleRad);           // 垂直方向の速度成分
 
 	// 初速度ベクトルの設定
 	m_velocity = playerForwardDirection * vx + DirectX::SimpleMath::Vector3(0.0f, vy, 0.0f);
@@ -102,7 +109,9 @@ void BomMovement::Projection(const DirectX::SimpleMath::Vector3& playerForwardDi
 void BomMovement::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
+	// バウディングスフィアの設定
 	m_bomState->SetBoundingSphere(m_boundingSphere);
+
 	// 当たり判定の位置の更新
 	m_boundingSphere.Center = m_position;
 	// 一定速度の上書き
@@ -111,45 +120,48 @@ void BomMovement::Update(const float& elapsedTime)
 	m_velocity += m_gravity * elapsedTime;
 	
 	// 地面に着地した場合、Y方向の速度を反転させる
-	if (m_position.y < GroundHeight)
-	{
+	if (m_position.y < GROUNDHEIGHT){
+		// バウンス状態にする
 		m_bomState->SetBounce(true);
+		// 速度をゼロにする
 		m_velocity = DirectX::SimpleMath::Vector3::Zero;
 	}
 	//バウンスしているか
-	if (m_bomState->GetBounce())
-	{
+	if (m_bomState->GetBounce()){
+		// バウンス処理をする
 		HandleCollision();
 	}
 	//壁との当たり判定
-	for (const auto& wall : m_wall)
-	{
-		CheckHit(wall->GetBoundingBox(),wall->GetExist());
+	for (const auto& wall : m_wall){
+
+		HitCheck(wall->GetBoundingBox(),wall->GetExist());
 	}
 
 	// 位置の更新
 	m_position += m_velocity * elapsedTime;
 
 	//0より下にいかないように
-	if (m_position.y < MinHeight)
-	{
-		m_position.y = MinHeight;
+	if (m_position.y < MINHEIGHT){
+		m_position.y = MINHEIGHT;
 	}
 
 	//時間が来たら爆発させる
-	if (m_bomState->GetExplosionTimer() < 0.0f)
-	{
+	if (m_bomState->GetExplosionTimer() < 0.0f){
+		// 爆発状態に移行
 		m_bomState->ChangeState(m_bomState->GetBomExplosion());
 	}
-
+	//　バウディングスフィアの位置を更新
 	m_boundingSphere.Center = m_position;
+	// 位置を更新する
 	m_bomState->SetPosition(m_position);
+	// 速度の更新
 	m_bomState->SetVelocity(m_velocity);
 }
 
 // 事後更新する
 void BomMovement::PostUpdate()
 {
+	//位置の更新
 	m_bomState->SetPosition(m_position);
 }
 
@@ -164,10 +176,11 @@ void BomMovement::Render(const DirectX::SimpleMath::Matrix& view, const DirectX:
 	auto states = m_commonResources->GetCommonStates();
 	
 	// ワールド行列を更新する
-	Matrix world = DirectX::SimpleMath::Matrix::CreateScale(0.005f) * 
+	Matrix world = DirectX::SimpleMath::Matrix::CreateScale(BomState::BOMBMODELSIZE) * 
 		Matrix::CreateTranslation(m_position);
 	// モデルを表示する
 	m_bomModel->Draw(context, *states, world, view, projection);
+
 #ifdef _DEBUG
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
@@ -200,21 +213,21 @@ void BomMovement::Finalize()
 void BomMovement::HandleCollision()
 {
 	// 反射ベクトルを設定する
-	m_velocity = -m_velocity * BounceFactor;
-
+	m_velocity = -m_velocity * BOUNCEFACTOR;
+	// バウンスしていない状態にする
 	m_bomState->SetBounce(false);
 }
 
 //---------------------------------------------------------
 // 壁との衝突判定する
 //---------------------------------------------------------
-void BomMovement::CheckHit(DirectX::BoundingBox boundingBox, const bool IsWall)
+void BomMovement::HitCheck(DirectX::BoundingBox boundingBox, const bool IsWall)
 {
 	using namespace DirectX::SimpleMath;
 
 	// バウンディングスフィアと壁のAABBが衝突しているかをチェック
 	bool isHitWall = m_boundingSphere.Intersects(boundingBox);
-
+	// していないなら飛ばす
 	if (!isHitWall || !IsWall ) { return; }
 
 	// 衝突時の速度ベクトルを計算する
@@ -236,13 +249,13 @@ void BomMovement::CheckHit(DirectX::BoundingBox boundingBox, const bool IsWall)
 		normal.z = (m_position.z < bMin.z) ? 1.0f : -1.0f;
 	}
 
-	// 反射ベクトルを計算する
+	// 反射ベクトルを計算する(強く反射させるために２倍）
 	Vector3 reflection = m_velocity - 2.0f * (m_velocity.Dot(normal)) * normal;
 
 	// 反射ベクトルを設定する
-	m_velocity = reflection * BounceFactor;
+	m_velocity = reflection * BOUNCEFACTOR;
 
 	// 衝突後の位置調整（位置を少し押し戻す）
-	m_position -= normal * 0.01f; // 適宜調整
+	m_position -= normal * 0.01f; // これしないとめっちゃ不審な動きする
 
 }

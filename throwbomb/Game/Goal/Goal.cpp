@@ -13,11 +13,11 @@
 //---------------------------------------------------------
 Goal::Goal(DirectX::SimpleMath::Vector3 pos)
 	:
-	m_position{ pos },
-	m_model{},
 	m_commonResources{},
-	m_scale{0.025f},
+	m_model{},
 	m_boundingSphere{},
+	m_position{ pos },
+	m_scale{0.025f},
 	m_time{0.0f}
 {
 	//バウディングスフィアの設定
@@ -43,9 +43,9 @@ void Goal::Initialize(CommonResources* resources)
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	
 	//モデルの読み取り
-	ModelLoad(device);
+	LoadModel(device);
 	//シェーダーの読み取り
-	ShaderLoad(device);
+	LoadShader(device);
 	//定数バッファーの作成
 	CreateConstanBuffer(device);
 }
@@ -74,13 +74,14 @@ void Goal::Render(ID3D11DeviceContext* context,
 
 	//定数バッファにデータを設定する
 	PointLight* cb = static_cast<PointLight*>(mappedResource.pData);
-	cb->position = Vector4{ m_position.x,m_position.y + 2.0f,m_position.z + 1.0f,0.0f };
-	cb->color = Vector4{ 2.0f,2.0f,0.0f,0.0f };
+	cb->position = Vector4{ m_position.x,m_position.y + 2.0f,m_position.z + 1.0f, 0.0f };
+	cb->color = Vector4{ 2.0f,2.0f,0.0f,0.0f }; // 1より大きくしたことにより光を強くする(黄色）
 	cb->time = Vector4{ m_time,0.0f,0.0f,0.0f };
 
 	// マップを解除する
 	context->Unmap(m_constantBuffer.Get(), 0);
 
+	//描画
 	m_model->Draw(context, *states, world, view, projection, false, [&]()
 		{
 			// 定数バッファを指定する
@@ -110,7 +111,7 @@ void Goal::Finalize()
 //---------------------------------------------------------
 // モデルを読み取る
 //---------------------------------------------------------
-void Goal::ModelLoad(ID3D11Device* device)
+void Goal::LoadModel(ID3D11Device* device)
 {
 	//// モデルを読み込む準備
 	std::unique_ptr<DirectX::DX11::EffectFactory> fx = std::make_unique<DirectX::DX11::EffectFactory>(device);
@@ -122,8 +123,7 @@ void Goal::ModelLoad(ID3D11Device* device)
 	m_model->UpdateEffects([&](DirectX::DX11::IEffect* effect)
 		{
 			auto basicEffect = dynamic_cast<DirectX::DX11::BasicEffect*>(effect);
-			if (basicEffect)
-			{
+			if (basicEffect){
 				basicEffect->SetLightingEnabled(true);
 				basicEffect->SetPerPixelLighting(true);
 				basicEffect->SetTextureEnabled(true);
@@ -137,7 +137,7 @@ void Goal::ModelLoad(ID3D11Device* device)
 //---------------------------------------------------------
 // シェイダーの読み取り
 //---------------------------------------------------------
-void Goal::ShaderLoad(ID3D11Device* device)
+void Goal::LoadShader(ID3D11Device* device)
 {
 	std::vector<uint8_t> psBlob = DX::ReadData(L"Resources/Shaders/PointLightPS.cso");
 	DX::ThrowIfFailed(device->CreatePixelShader(psBlob.data(), psBlob.size(), nullptr, m_ps.ReleaseAndGetAddressOf()));

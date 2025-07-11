@@ -22,6 +22,7 @@ class Vase;
 class EnemyManager;
 class Fade;
 class SceneManager;
+class Sound;
 
 namespace mylib
 {
@@ -30,6 +31,11 @@ namespace mylib
 
 class PlayScene final :	public IScene
 {
+public:
+	// 強く押し返す
+	static constexpr float PUSHBACKSTRENGTH = 0.5f;
+	//　弱く押し返す
+	static constexpr float SMALLPUSHBACKSTRENGTH = 0.01f;
 public:
 	// コンストラクト
 	PlayScene(SceneManager* sceneManager);
@@ -50,7 +56,7 @@ private:
 	// クラスの生成
 	void CreateClass();
 	// ジェイソンの読み込み
-	void loadMapJSON(const char* filename);
+	void LoadMapJSON(const char* filename);
 	//カメラ処理
 	void CameraRotate();
 	//坂の当たり判定(プレイヤ）
@@ -59,8 +65,6 @@ private:
 	void CheckBomCollisionMesh();
 	//　スカイモデルの描画
 	void RenderSkyModel();
-	// リザルトチェンジ用の変数の設定
-	void RequestResultScene();
 
 private:
 	// 共通リソース
@@ -83,6 +87,8 @@ private:
 	std::unique_ptr<UI> m_ui;
 	// ゴール
 	std::unique_ptr<Goal> m_goal;
+	// 音
+	std::unique_ptr<Sound> m_sound;
 	// シーンマネージャ
 	SceneManager* m_sceneManager;
 	// スカイモデル
@@ -111,12 +117,6 @@ private:
 	std::vector<std::unique_ptr<Vase>> m_vase;
 	// フェイド
 	std::unique_ptr<Fade> m_fade;
-
-public:
-	// 強く押し返す
-	static constexpr float PUSHBACKSTRENGTH = 0.5f;
-	//　弱く押し返す
-	static constexpr float SMALLPUSHBACKSTRENGTH = 0.01f;
 
 private:
 	// 衝突したポリゴンの法線の傾き

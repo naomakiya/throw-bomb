@@ -51,7 +51,8 @@ EnemyManager::EnemyManager(const std::vector<std::unique_ptr<Wall>>& wall, Playe
     m_empty{},
     m_collisionMeshes{ collisionMeshes },
     m_isAllStraighteningEnemiesDefeated{ false },
-    m_isAllEnemiesDefeated{ false }
+    m_isAllEnemiesDefeated{ false },
+    m_defeatedEnemies{0}
 {
 
 }
@@ -79,24 +80,32 @@ void EnemyManager::Initialize(CommonResources* resources)
     fx->SetDirectory(L"Resources/Models/Enemy");
 
     //敵の読み取り
-    m_enemyModel = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("Enemy").c_str(), *fx);
-    m_enemydashuModel = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("DashuEnemy").c_str(), *fx);
+    m_enemyModel = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("Enemy").c_str(), *fx);
+    m_enemydashuModel = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("DashuEnemy").c_str(), *fx);
     // 敵を生成する
     m_enemy = EnemyFactory::CreateEnemy(m_wall, m_player, m_commonResources, m_enemyMap, m_patrolPath);
     //突進する敵を生成
     m_straighteningEnemy = StraighteningEnemyFactory::CreateEnemy(m_wall, m_player, m_commonResources, m_straighteningEnemyMap, m_patrolPath);
 
+
+    m_enemyes = static_cast<int>(m_enemy.size());
+    m_straighteningEnemys = static_cast<int>(m_straighteningEnemy.size());
+    m_sumEnemy = m_enemyes + m_straighteningEnemys;
 }
+
 //---------------------------------------------------------
 // 更新する
 //---------------------------------------------------------
 void EnemyManager::Update(const float& elapsedTime)
 {
+    m_defeatedEnemies = 0;
     //敵
     EnemyUpdate(elapsedTime);
    //突進する敵
     StraighteningEnemyUpdate(elapsedTime);
-
+    //残りの敵の数
+    m_remainingEnemies = m_enemyes + m_straighteningEnemys;
+   
     //全ての敵がいないなら敵が無い無い状態をオンにする
     if (m_isAllEnemiesDefeated && m_isAllStraighteningEnemiesDefeated) {
         m_empty = true;
@@ -139,14 +148,19 @@ void EnemyManager::Finalize()
 void EnemyManager::EnemyUpdate(const float& elapsedTime)
 {
     m_isAllEnemiesDefeated = true; // すべての敵が倒されたか判定するフラグ
+    m_enemyes = static_cast<int>(m_enemy.size());
     //更新
-    for (auto& enemy : m_enemy)
-    {
+    for (auto& enemy : m_enemy){
         //生きているなら
-        if (enemy->GetExist())
-        {
+        if (enemy->GetExist()) {
             enemy->Update(elapsedTime);
             m_isAllEnemiesDefeated = false; // 一体でも生存しているなら false にする
+           
+        }
+        else
+        {
+            m_enemyes--;
+            m_defeatedEnemies++;
         }
     }
 
@@ -158,25 +172,20 @@ void EnemyManager::EnemyUpdate(const float& elapsedTime)
         // 敵が生きていないならスキップ
         if (!enemy->GetExist()) continue;
 
-        for (int i = 0; i < 3; i++)
-        {
+        for (int i = 0; i < PlayerState::BOMMAX; i++){
             //ボムが表示されているなら
-            if (m_player->GetBomState(i)->GetExist())
-            {
+            if (m_player->GetBomState(i)->GetExist()){
                 //敵とボムが当たったなら
-                if (mylib::Collision::BoundingCheckCollision(enemy->GetBoundingBox(), m_player->GetBomState(i)->GetBoundingSphere()))
-                {   // 爆発状態なら
+                if (mylib::Collision::BoundingCheckCollision(enemy->GetBoundingBox(), m_player->GetBomState(i)->GetBoundingSphere())) {   // 爆発状態なら
                     if (m_player->GetBomState(i)->GetBomPresent() == BomState::EXPLOSION) enemy->HPDown();
                 }
             }
         }
 
         // プレイヤが無敵でないなら
-        if (!m_player->GetHitEnemy())
-        {
+        if (!m_player->GetHitEnemy()){
             //プレイヤーと敵の当たり判定
-            if (mylib::Collision::BoundingCheckBoxCollision(m_player->GetBoundingBox(), enemy->GetBoundingBox())) m_player->SetHitEnemy(true);
-            
+            if (mylib::Collision::BoundingCheckBoxCollision(m_player->GetBoundingBox(), enemy->GetBoundingBox())) m_player->SetHitEnemy(true);    
         }
     }
   
@@ -188,43 +197,44 @@ void EnemyManager::EnemyUpdate(const float& elapsedTime)
 void EnemyManager::StraighteningEnemyUpdate(const float& elapsedTime)
 {
     m_isAllStraighteningEnemiesDefeated = true;
-
+    m_straighteningEnemys = static_cast<int>(m_straighteningEnemy.size());
     // 突進敵の更新
-    for (auto& straighteningEnemy : m_straighteningEnemy)
-    {
+    for (auto& straighteningEnemy : m_straighteningEnemy){
         //生きているなら
         if (straighteningEnemy->GetExist()) {
             straighteningEnemy->Update(elapsedTime);
             m_isAllStraighteningEnemiesDefeated = false;
+           
+        }
+        else
+        {
+            m_straighteningEnemys--;
+            m_defeatedEnemies++;
         }
     }
 
     //敵の当たり判定
-    for (auto& enemy : m_straighteningEnemy)
-    {
+    for (auto& enemy : m_straighteningEnemy){
         // 敵が生きていないならスキップ
         if (!enemy->GetExist()) continue;
 
         CollisionMeshDeterminationEnemy(move(enemy));
 
-        for (int i = 0; i < 3; i++)
-        {
+        for (int i = 0; i < PlayerState::BOMMAX; i++) {
             //ボムが描画されているなら
-            if (m_player->GetBomState(i)->GetExist())
-            {   //敵とボムが当たったなら
-                if (mylib::Collision::BoundingCheckCollision(enemy->GetBoundingBox(), m_player->GetBomState(i)->GetBoundingSphere()))
-                {   // 爆発状態なら
+            if (m_player->GetBomState(i)->GetExist()){   
+                //敵とボムが当たったなら
+                if (mylib::Collision::BoundingCheckCollision(enemy->GetBoundingBox(), m_player->GetBomState(i)->GetBoundingSphere())){  
+                    // 爆発状態なら
                     if (m_player->GetBomState(i)->GetBomPresent() == BomState::EXPLOSION) enemy->HPDown();
                 }
             }
         }
 
         //敵とプレイヤーが生きているなら
-        if (!m_player->GetHitEnemy())
-        {
+        if (!m_player->GetHitEnemy()) {
             //プレイヤーと敵の当たり判定
-            if (mylib::Collision::BoundingCheckBoxCollision(m_player->GetBoundingBox(), enemy->GetBoundingBox()))
-            {
+            if (mylib::Collision::BoundingCheckBoxCollision(m_player->GetBoundingBox(), enemy->GetBoundingBox())) {
                 m_player->SetHitEnemy(true);
             }
         }
@@ -251,19 +261,15 @@ void EnemyManager::CollisionMeshDeterminationEnemy(const std::unique_ptr<IEnemyS
     float collisionMeshYPosition = collision.hitPosition.y;
 
     // 敵がコリジョンメッシュより上にいない場合
-    if (enemyYPosition <= collisionMeshYPosition)
-    {
+    if (enemyYPosition <= collisionMeshYPosition){
         // 強く押し返す場合
-        if (collisionMeshYPosition - enemyYPosition > 0.25f)
-        {
+        if (collisionMeshYPosition - enemyYPosition > 0.25f) {
             float pushBackStrength = 0.5f;
             Vector3 pushBackPosition = collision.hitPosition + collision.normal * pushBackStrength;
 
-
             enemy->SetPosition(pushBackPosition);
         }
-        else
-        {
+        else{
             // 坂道を登れるように少しだけ押し返す
             float smallPushBackStrength = 0.01f;
             Vector3 pushBackPosition = collision.hitPosition + collision.normal * smallPushBackStrength;

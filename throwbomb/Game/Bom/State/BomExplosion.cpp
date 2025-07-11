@@ -13,6 +13,8 @@
 #include <Libraries/Microsoft/ReadData.h>
 #include "Game/Dithering/Dithering.h"
 #include "Game/UI/Smork.h"
+#include <Framework/LoadJson.h>
+#include <Game/ResourceManager/ResourceManager.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -35,7 +37,8 @@ BomExplosion::BomExplosion(BomState* bomState, const std::vector<std::unique_ptr
 	m_elapsedTime(0.0f),
 	m_ps{},
 	m_constantBuffer{},
-	m_smork{}
+	m_smork{},
+	m_seVolume{ 0.0f }
 {
 	m_boundingSphere.Center = m_position;
 	m_boundingSphere.Radius = m_scale;
@@ -66,11 +69,9 @@ void BomExplosion::Initialize(CommonResources* resources)
 	m_explosionSphere = DirectX::Model::CreateFromCMO(device, L"Resources/Models/exprol/exprol.cmo", *fx);
 
 	// 爆発球のエフェクトを設定する
-	m_explosionSphere->UpdateEffects([&](DirectX::DX11::IEffect* effect)
-		{
+	m_explosionSphere->UpdateEffects([&](DirectX::DX11::IEffect* effect){
 			auto basicEffect = dynamic_cast<DirectX::DX11::BasicEffect*>(effect);
-			if (basicEffect)
-			{
+			if (basicEffect){
 				basicEffect->SetLightingEnabled(true);
 				basicEffect->SetPerPixelLighting(true);
 				basicEffect->SetTextureEnabled(true);
@@ -100,11 +101,18 @@ void BomExplosion::Initialize(CommonResources* resources)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			L"Resources/Textures/Explosion.png",
+			ResourceManager::GetTexturePath("Explosion").c_str(),
 			nullptr,
 			m_explosionTexture.ReleaseAndGetAddressOf()
 		)
 	);
+	
+	// 音量の読み込み
+	LoadJson json("Resources/Json/Music.json");
+	// BGMの音量の設定
+	m_seVolume = json.GetJson()["BGM"].value("Volume", 0.0f);
+	m_sound = std::make_unique<Sound>();
+	m_sound->Initialize();
 	
 }
 
@@ -117,10 +125,12 @@ void BomExplosion::PreUpdate()
 	m_scale = 0.25f;
 	m_elapsedTime = 0.0f;
 	m_smork->SetOn(true);
-	// SEを再生
-	Sound::GetInstance().Initialize();
-	Sound::GetInstance().PlaySE("Resources/Sounds/Bom.mp3");
-	Sound::GetInstance().SetVolume(0.4f);
+	// 現在の状態を移動にする
+	m_bomState->SetBomPresent(BomState::BomtPresent::EXPLOSION);
+	// SEの再生
+	m_sound->PlaySE(ResourceManager::GetSEPath("Bom").c_str());
+	// 音量の設定
+	m_sound->SetVolume(m_seVolume);
 }
 
 //---------------------------------------------------------
@@ -137,9 +147,8 @@ void BomExplosion::Update(const float& elapsedTime)
 	m_smork->Update(elapsedTime, m_position, m_scale);
 	//時間経過で膨張速度を制御
 	m_scale += 2.0f * elapsedTime;
-	if (m_scale > 2.0)
-	{
-		m_scale = 2.0f;
+	if (m_scale > 10.0){
+		m_scale = 10.0f;
 	}
 	//　大きさを変更する
 	m_boundingSphere.Radius = m_scale;
@@ -148,12 +157,10 @@ void BomExplosion::Update(const float& elapsedTime)
 
 	float lastExplosionEnd = 0.0f;
 
-	for (const auto& obj : m_explosionObjects) 
-	{
+	for (const auto& obj : m_explosionObjects){
 		float endTime = obj.startTime + obj.duration;
 
-		if (endTime > lastExplosionEnd) 
-		{
+		if (endTime > lastExplosionEnd){
 			lastExplosionEnd = endTime;
 		}
 	}
@@ -163,7 +170,7 @@ void BomExplosion::Update(const float& elapsedTime)
 	for (auto& obj : m_explosionObjects)
 	{
 		// 表示開始前
-		if (totalElapsedTime < obj.startTime) {
+		if (totalElapsedTime < obj.startTime){
 			obj.active = false;
 			continue;
 		}
@@ -178,8 +185,7 @@ void BomExplosion::Update(const float& elapsedTime)
 		obj.active = true;
 	}
 
-	if (m_elapsedTime >= lastExplosionEnd)
-	{
+	if (m_elapsedTime >= lastExplosionEnd){
 		m_bomState->ChangeState(m_bomState->GetBomExist());
 	}
 
@@ -242,7 +248,8 @@ void BomExplosion::Render(const DirectX::SimpleMath::Matrix& view, const DirectX
 //---------------------------------------------------------
 void BomExplosion::Finalize()
 {
-	Sound::GetInstance().Finalize();
+	// 音の終了処理
+	m_sound->Finalize();
 }
 
 //---------------------------------------------------------

@@ -92,10 +92,12 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_bgmVolume = json.GetJson()["BGM"].value("Volume", 0.0f);
 	m_seVolume = json.GetJson()["SE"].value("Volume", 0.0f);
 
-	// 音のインスタンスの取得　再生
-	auto& sound = Sound::GetInstance();
-	sound.Initialize();
-	sound.PlayBGM(ResourceManager::getBGMPath("TitleBGM").c_str(), true);
+	m_sound = std::make_unique<Sound>();
+	m_sound->Initialize();
+	// BGMの再生
+	m_sound->PlayBGM(ResourceManager::GetBGMPath("TitleBGM").c_str(), true);
+	// 音量の設定
+	m_sound->SetVolume(m_bgmVolume);
 }
 
 //---------------------------------------------------------
@@ -155,7 +157,8 @@ void TitleScene::Render()
 //---------------------------------------------------------
 void TitleScene::Finalize()
 {
-	Sound::GetInstance().Finalize();
+	// 音の終了処理
+	m_sound->Finalize();
 }
 
 //---------------------------------------------------------
@@ -202,7 +205,9 @@ void TitleScene::CreateClass()
 void TitleScene::LoadResource(ID3D11Device1* device)
 {
 	LoadTexture(device, "TitleName", m_title);
+
 	LoadTexture(device, "Strat", m_space);
+
 	LoadTexture(device, "Finish", m_end);
 	LoadTexture(device, "Floor", m_background);
 	LoadTexture(device, "Option", m_option);
@@ -218,12 +223,13 @@ void TitleScene::LoadResource(ID3D11Device1* device)
 //---------------------------------------------------------
 // リソースの読み込み
 //---------------------------------------------------------
-void TitleScene::LoadTexture(ID3D11Device1* device, const std::string& name, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& texture)
+void TitleScene::LoadTexture(ID3D11Device1* device, const std::string& name,
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& texture)
 {
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath(name).c_str(),
+			ResourceManager::GetTexturePath(name).c_str(),
 			nullptr,
 			texture.ReleaseAndGetAddressOf()
 		)
@@ -440,7 +446,7 @@ void TitleScene::HandleOptionInput(const DirectX::Keyboard::KeyboardStateTracker
 	}
 
 	// 音量適用
-	Sound::GetInstance().SetVolume(m_bgmVolume);
+	m_sound->SetVolume(m_bgmVolume);
 	// オプション終了
 	if (tracker->pressed.Space && m_currentOptionSelection == OptionSelection::END) {
 		m_isOptionActive = false;

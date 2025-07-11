@@ -11,8 +11,8 @@
 std::unique_ptr<ResourceManager> ResourceManager::instance = nullptr;
 std::mutex ResourceManager::mutex;
 
-ModelResource ResourceManager::modelResource_;
-TextureResource ResourceManager::textureResource_;
-BGMResource ResourceManager::bgmResource_;
-SEResource ResourceManager::seResource_;
-StageResource ResourceManager::stageResource;
+ModelResource ResourceManager::m_modelResource;
+TextureResource ResourceManager::m_textureResource;
+BGMResource ResourceManager::m_bgmResource;
+SEResource ResourceManager::m_seResource;
+StageResource ResourceManager::m_stageResource;

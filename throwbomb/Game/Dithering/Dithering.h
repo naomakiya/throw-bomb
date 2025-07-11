@@ -15,7 +15,6 @@ namespace DX
 class Dithering
 {
 private:
-
     // オブジェクト情報を保持する構造体
     struct ObjectInfo
     {
@@ -31,6 +30,7 @@ private:
         DirectX::XMMATRIX viewMatrix;			// ビュー行列
         DirectX::XMVECTOR cameraPosition;		// カメラ座標
     };
+
 public:
     // コンストラクタ
     Dithering(ID3D11Device1* device);
@@ -42,6 +42,7 @@ public:
         DirectX::SimpleMath::Matrix worlds,
         DirectX::SimpleMath::Vector3 position,
         DirectX::Model* model);
+
 private:
     // シェーダをロードする
     void LoadShader(ID3D11Device* device);

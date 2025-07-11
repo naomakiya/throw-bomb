@@ -7,6 +7,9 @@
 
 // 前方宣言
 class CommonResources;
+class Sound;
+class SceneManager;
+class NumberUI;
 
 class ResultScene final :
 	public IScene
@@ -15,7 +18,7 @@ public:
 	enum class Selection { Select,ReStart, Title };
 public:
 	//コンストラクト
-	ResultScene();
+	ResultScene(SceneManager* sceneManager);
 	//デストラクト
 	~ResultScene() override;
 	//イニシャライズ
@@ -38,14 +41,21 @@ private:
 	CommonResources* m_commonResources;
 	// スプライトバッチ
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+	// 音
+	std::unique_ptr<Sound> m_sound;
+	// シーンマネージャ
+	SceneManager* m_sceneManager;
+	// 数字UI
+	std::unique_ptr<NumberUI> m_numberUI;
 	// テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_clear;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_background;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_backGround;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_select;
-	// テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_reStart;
-	// テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_title;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_scoreTextur;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_selectBox;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_aScore;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 	// ビュー行列（固定カメラ用）
@@ -57,9 +67,13 @@ private:
 	// テクスチャの半分の大きさ
 	DirectX::SimpleMath::Vector2 m_texCenter;
 	// 大きさ
-	DirectX::SimpleMath::Vector2 m_scale;
+	float m_scale;
 	// 現在選んでいる物
 	Selection m_currentSelection;
+	//セレクトBOXの位置
+	DirectX::SimpleMath::Vector2 m_slectPos;
+	//スコア
+	float m_score;
 	//シーンチェンジPlayScene
 	bool m_replay;
 	//シーンチェンジSelectScene

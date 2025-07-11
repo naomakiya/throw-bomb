@@ -10,20 +10,6 @@
 #include <iostream>
 #include <Framework/LoadJson.h>
 
-// 静的メンバの初期化
-std::unique_ptr<Sound> Sound::instance = nullptr;
-std::mutex Sound::mutex;
-
-// シングルトンインスタンスの取得
-Sound& Sound::GetInstance() 
-{
-	std::lock_guard<std::mutex> lock(mutex);
-	if (!instance) 
-	{
-		instance.reset(new Sound());
-	}
-	return *instance;
-}
 
 //---------------------------------------------------------
 // コンストラクタ
@@ -35,7 +21,8 @@ Sound::Sound()
 	m_soundBGM{ nullptr },
 	m_seChannel{ nullptr },
 	m_bgmChannel{ nullptr },
-	m_channel{nullptr},
+	m_channel{ nullptr },
+	m_currentBGMSound{ nullptr },
 	m_bgmVolume{0.0f},
 	m_seVolume{0.0f}
 
@@ -53,10 +40,10 @@ Sound::~Sound()
 //---------------------------------------------------------
 // 初期化する
 //---------------------------------------------------------
-// 初期化処理
 void Sound::Initialize()
 {
 	FMOD_RESULT result = FMOD::System_Create(&m_system);
+
 	if (result != FMOD_OK) {
 		std::cerr << "FMOD::System_Create failed: " << FMOD_ErrorString(result) << std::endl;
 		return;
@@ -90,11 +77,20 @@ void Sound::Update()
 //---------------------------------------------------------
 void Sound::Finalize() 
 {
-	m_channel->stop();
+	/*m_channel->stop();
 	FMOD_RESULT result = m_system->close();
 	result = m_system->release();
-	m_system = nullptr;
+	m_system = nullptr;*/
 	
+	if (m_currentBGMSound) {
+		m_currentBGMSound->release();
+		m_currentBGMSound = nullptr;
+	}
+	if (m_system) {
+		m_system->close();
+		m_system->release();
+		m_system = nullptr;
+	}
 }
 
 //void Sound::PlaySounds(const std::string& filePath, bool loop) 
@@ -127,28 +123,17 @@ void Sound::Finalize()
 
 void Sound::PlayBGM(const std::string& filePath, bool loop)
 {
-	assert(m_system);
-
-	FMOD::Sound* sound = nullptr;
+	if (m_currentBGMSound) {
+		m_currentBGMSound->release();  // 以前の音を解放
+		m_currentBGMSound = nullptr;
+	}
 
 	FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_DEFAULT;
+	FMOD_RESULT result = m_system->createSound(filePath.c_str(), mode, nullptr, &m_currentBGMSound);
+	if (result != FMOD_OK) return;
 
-	FMOD_RESULT result = m_system->createSound(filePath.c_str(), mode, nullptr, &sound);
-	if (result != FMOD_OK)
-	{
-		std::cerr << "BGM load error: " << filePath << " (" << FMOD_ErrorString(result) << ")" << std::endl;
-		return;
-	}
-
-	// 既存のBGM止める（必要なら）
 	if (m_bgmChannel) m_bgmChannel->stop();
-
-	result = m_system->playSound(sound, nullptr, false, &m_bgmChannel);
-	if (result != FMOD_OK)
-	{
-		std::cerr << "BGM play error: " << filePath << " (" << FMOD_ErrorString(result) << ")" << std::endl;
-	}
-
+	m_system->playSound(m_currentBGMSound, nullptr, false, &m_bgmChannel);
 	m_bgmChannel->setVolume(m_bgmVolume);
 }
 
@@ -181,4 +166,9 @@ void Sound::SetVolume(float volume)
 		m_bgmChannel->setVolume(volume);
 	}
 	
+}
+
+void Sound::StopBGM()
+{
+	m_bgmChannel->stop();
 }

@@ -75,7 +75,7 @@ public:
 	//Œãˆ—‚ğs‚¤
 	void Finalize();
 	//“G‚ÆG‚ê‚½‚ÌŒø‰Ê
-	void EnemyHitFlashing(const DirectX::Model& model, const DirectX::FXMMATRIX world, const  DirectX::CXMMATRIX view, const  DirectX::CXMMATRIX projection);
+	void EnemyHitFlashing(const DirectX::Model& model, const DirectX::FXMMATRIX& world, const  DirectX::CXMMATRIX& view, const  DirectX::CXMMATRIX& projection);
 	//“G‚Æ“–‚½‚Á‚½
 	void EnemyHit(const float& elapsedTime);
 

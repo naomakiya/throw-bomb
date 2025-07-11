@@ -2,9 +2,10 @@
   @file 　PlayerMovement.h
   @brief プレイヤ移動状態クラス
 */
+
 #pragma once
-#ifndef PLAYERMOVEMENT_DEFINED
-#define PLAYERMOVEMENT_DEFINED
+#ifndef PLAYE_RMOVEMENT_DEFINED
+#define PLAYER_MOVEMENT_DEFINED
 #include"Interface/IPlayerState.h"
 
 class CommonResources;
@@ -20,19 +21,22 @@ public:
 	//デストラクタ
 	~PlayerMovement();
 	//初期化する
-	void Initialize(CommonResources* resources);
+	void Initialize(CommonResources* resources) override;
 	// 事前更新する
-	void PreUpdate();
+	void PreUpdate() override;
 	//更新する
-	void Update(const float& elapsedTime);
+	void Update(const float& elapsedTime) override;
 	// 事後更新する
-	void PostUpdate();
+	void PostUpdate() override;
 	//描画する
-	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection) ;
+	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection) override;
 	//後処理を行う
 	void Finalize();
+
+private:
 	//移動処理
 	void Movement(const float& elapsedTime);
+
 public:
 	// 速さ
 	static constexpr float STARTSPEED = 1.0f;
@@ -40,13 +44,14 @@ public:
 	static constexpr float MAXSPEED = 5.0f;  
 	// 加速度
 	const float acceleration = 0.15f;  
+
 private:
+	// 共通リソース
+	CommonResources* m_commonResources;
 	//プレイヤー
 	PlayerState* m_player;
 	//壁
 	const std::vector<std::unique_ptr<Wall>>& m_wall;
-	// 共通リソース
-	CommonResources* m_commonResources;
 	//現在の状態
 	IPlayerState* m_currentState;
 	//カメラ
@@ -75,7 +80,6 @@ private:
 	float m_vel;
 	//時間
 	float m_time;
-
 	
 };
-#endif		// PLAYER_DEFINED
+#endif		//  PLAYE_RMOVEMENT_DEFINED

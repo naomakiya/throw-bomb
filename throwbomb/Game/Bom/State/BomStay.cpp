@@ -2,15 +2,18 @@
   @file  BomStay.cpp
   @brief ボムの真下に置くクラス
 */
+
 #include "pch.h"
 #include "Framework/CommonResources.h"
 #include "Framework/DeviceResources.h"
+#include <Game/ResourceManager/ResourceManager.h>
 #include "Game/Bom/BomState.h"
 #include "Game/Bom/State/BomStay.h"
 #include "Game/Bom/State/BomExplosion.h"
+#include "Game/Bom/State/BomMovement.h"
 #include "Game/Player/PlayerState.h"
 #include "Game/Wall/Wall.h"
-#include <Game/ResourceManager/ResourceManager.h>
+
 
 //---------------------------------------------------------
 // コンストラクタ
@@ -22,7 +25,7 @@ BomStay::BomStay(BomState* bomState,PlayerState* playerState, const std::vector<
 	, m_wall(wall)
 	, m_position{}
 	, m_velocity{}
-	, m_gravity(0.0f, -9.81f, 0.0f)
+	, m_gravity(0.0f, BomState::GRAVITY, 0.0f)
 	, m_boundingSphere{} 
 	, m_bomModel(nullptr)
 {
@@ -51,16 +54,18 @@ void BomStay::Initialize(CommonResources* resources)
 	fx->SetDirectory(L"Resources/Models");
 
 	//モデルをロードする
-	m_bomModel = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("Bom").c_str(), *fx);
+	m_bomModel = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("Bom").c_str(), *fx);
 	// バウディングスフィアの設定
-	m_boundingSphere.Radius = 0.25f;
+	m_boundingSphere.Radius = BomState::BOUNDINGSPHERERADIUS;
 
 }
 
 // 事前更新する
 void BomStay::PreUpdate()
 {
+	//	置く状態に変更する
 	m_bomState->SetBomPresent(STAY);
+	// 現在の位置を取得する
 	m_position = m_bomState->GetPosition();
 	//爆発するまでの時間
 	if(m_bomState->GetExplosionTimer() < 0.0f)m_bomState->SetExplosionTimer(5.0f);
@@ -76,22 +81,22 @@ void BomStay::Update(const float& elapsedTime)
 
 	// 重力の更新
 	m_velocity += m_gravity * elapsedTime;   
-	
-	//壁の当たり判定
-	for (const auto& wall : m_wall)
-	{
-		CheckHit(wall->GetBoundingBox(),wall->GetExist());
-	}
 	// 位置の更新
-	m_position += m_velocity * elapsedTime;  
+	m_position += m_velocity * elapsedTime;
+
+	//壁の当たり判定
+	for (const auto& wall : m_wall){
+		HitCheck(wall->GetBoundingBox(),wall->GetExist());
+	}
 	
-	if (m_position.y < 0.5f) m_position.y = 0.5f;
+	// 地面にめり込まないようにする
+	if (m_position.y < BomMovement::GROUNDHEIGHT) m_position.y = BomMovement::GROUNDHEIGHT;
 
 	//　当たり判定を調整する
 	m_boundingSphere.Center = m_position;
 	//時間が着たら爆発へ移行させる
-	if (m_bomState->GetExplosionTimer() < 0.0f)
-	{
+	if (m_bomState->GetExplosionTimer() < 0.0f){
+		// 爆発状態に移行
 		m_bomState->ChangeState(m_bomState->GetBomExplosion());
 	}
 }
@@ -99,7 +104,7 @@ void BomStay::Update(const float& elapsedTime)
 // 事後更新する
 void BomStay::PostUpdate()
 {
-	m_bomState->SetBomPresent(EXPLOSION);
+	// 位置情報の更新
 	m_bomState->SetPosition(m_position);
 }
 
@@ -131,13 +136,13 @@ void BomStay::Finalize()
 //---------------------------------------------------------
 // 衝突判定する
 //---------------------------------------------------------
-void BomStay::CheckHit(DirectX::BoundingBox boundingBox, const bool IsWall)
+void BomStay::HitCheck(DirectX::BoundingBox boundingBox, const bool IsWall)
 {
 	using namespace DirectX::SimpleMath;
 
 	// バウンディングスフィアと壁のAABBが衝突しているかをチェック
 	bool isHitWall = m_boundingSphere.Intersects(boundingBox);
-
+	// 反応してないなら飛ばす
 	if (!isHitWall || !IsWall ) { return; }
 
 	// 衝突時の速度ベクトルを計算する

@@ -1,7 +1,8 @@
 /*
   @file BomExist.h
-  @brief ボム生存クラス
+  @brief ボム生存関する状態クラス
 */
+
 #pragma once
 #ifndef BOMEXIST_DEFINED
 #define BOMEXIST_DEFINED
@@ -18,20 +19,27 @@ class BomExist :public IBomState
 public:
 	// コンストラクタ
 	BomExist(BomState* bomState, PlayerState* player);
-	//デストラクタ
+	// デストラクタ
 	~BomExist();
-	//初期化する
+	// 初期化する
 	void Initialize(CommonResources* resources)override;
 	// 事前更新する
 	void PreUpdate();
-	//更新する
+	// 更新する
 	void Update(const float& elapsedTime) override;
 	// 事後更新する
 	void PostUpdate();
-	//描画する
+	// 描画する
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection) override;
-	//後処理を行う
+	// 後処理を行う
 	void Finalize() override;
+
+public:
+	// プレイヤーの上にスポーンするボムのY軸オフセット
+	static constexpr float BOMSPAWNHEIGHT = 1.5f;
+	//角度の速度
+	static constexpr float ANGLESPEED = 15.0f;
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -45,12 +53,10 @@ private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_bomModel;
 
-	//現在の投げる角度
+	// 現在の投げる角度
 	float m_currentAngle;
-	//押し時間
+	// 押し時間
 	float m_holdStartTime;
-	// プレイヤーの上にスポーンするボムのY軸オフセット
-	static constexpr float BomSpawnHeight = 1.5f;
 
 	// 生存の有無
 	bool m_isExist;
@@ -61,7 +67,6 @@ private:
 	//ボムを持っているか
 	bool m_isHoldingBom;
 	
-	//角度の速度
-    const float m_angleSpeed = 15.0f;
+	
 };
 #endif		// BOMEXIST_DEFINED

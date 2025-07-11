@@ -17,23 +17,25 @@ namespace FMOD
 class Sound
 {
 private:
-	// シングルトン用の静的なインスタンス
-	static std::unique_ptr<Sound> instance;
-	static std::mutex mutex;
 	
 	// FMODで使用する変数（ポインタ）
-	FMOD::System* m_system;	// FMODのシステム
-	FMOD::Sound* m_soundSE;	// SE用の音声データ
-	FMOD::Sound* m_soundBGM;	// BGM用の音声データ
-	FMOD::Channel* m_seChannel;	// SEを再生するチャンネル
-	FMOD::Channel* m_bgmChannel;// BGMを再生するチャンネル
+	// FMODのシステム
+	FMOD::System* m_system;	
+	// SE用の音声データ
+	FMOD::Sound* m_soundSE;
+	// BGM用の音声データ
+	FMOD::Sound* m_soundBGM;
+	// SEを再生するチャンネル
+	FMOD::Channel* m_seChannel;	
+	// BGMを再生するチャンネル
+	FMOD::Channel* m_bgmChannel;
 	FMOD::Channel* m_channel;
+	FMOD::Sound* m_currentBGMSound;
 
 	float m_bgmVolume;
 	float m_seVolume;
+
 public:
-	// シングルトンインスタンスの取得
-	static Sound& GetInstance();
 	Sound();
 	~Sound();
 	void Initialize();
@@ -45,6 +47,7 @@ public:
 
 	// 音量を設定する
 	void SetVolume(float volume);
+	void StopBGM();
 	void PlayBGM(const std::string& filePath, bool loop = true);
 	void PlaySE(const std::string& filePath);
 };

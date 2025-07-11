@@ -14,6 +14,7 @@
 #include "Game/Collision/Collision.h"
 #include "Game/Bom/BomState.h"
 
+
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
@@ -26,10 +27,6 @@ EnemyMovement::EnemyMovement(EnemyState* enemyState, const std::vector<std::uniq
     m_wall{wall},
     m_scale(m_enemy->GetScale()),
     m_exist(m_enemy->GetExist()),
-    m_isPaused(),
-    m_pauseTimer{},
-    m_pauseDuration{},
-    m_timeUntilNextPause{},
     m_moveSpeed(2.5f),
     m_isHit{false},
     m_patrolPath(patrolPath),
@@ -55,11 +52,11 @@ void EnemyMovement::Initialize(CommonResources* resources, DirectX::SimpleMath::
 	assert(resources);
 	m_commonResources = resources;
 
-	// バウンディングボックス
+	// バウンディングボックス(当たり判定）
     m_position = pos;
 	m_boundingBox.Center = pos;
 	m_boundingBox.Extents = DirectX::SimpleMath::Vector3(0.5f);
-
+    // バウディングスフィアの作成（探索球）
     m_boundingSphere.Center = pos;
     m_boundingSphere.Radius = 2.5f;
 
@@ -137,8 +134,7 @@ void EnemyMovement::Finalize()
 //---------------------------------------------------------
 void EnemyMovement::SetNearestGoal()
 {
-    if (m_patrolPath.empty())
-    {
+    if (m_patrolPath.empty()){
         m_currentGoalNo = 0;
         return;
     }
@@ -147,16 +143,16 @@ void EnemyMovement::SetNearestGoal()
     float minDistanceSq = FLT_MAX;
     int nearestGoal = 0;
 
-    for (size_t i = 0; i < m_patrolPath.size(); ++i)
-    {
+    for (size_t i = 0; i < m_patrolPath.size(); ++i) {
+       
         float distanceSq = DirectX::SimpleMath::Vector3::DistanceSquared(m_position, m_patrolPath[i]);
-        if (distanceSq < minDistanceSq)
-        {
+        
+        if (distanceSq < minDistanceSq){
             minDistanceSq = distanceSq;
             nearestGoal = static_cast<int>(i);
         }
     }
-
+    // 向かうゴールへの番号
     m_currentGoalNo = nearestGoal;
 }
 
@@ -173,11 +169,9 @@ int EnemyMovement::GetFurthestGoalFrom()
     float maxDistanceSq = 0.0f;
     int furthestIndex = m_currentGoalNo;
 
-    for (size_t i = 0; i < m_patrolPath.size(); ++i)
-    {
+    for (size_t i = 0; i < m_patrolPath.size(); ++i){
         float distSq = DirectX::SimpleMath::Vector3::DistanceSquared(playerPos, m_patrolPath[i]);
-        if (distSq > maxDistanceSq)
-        {
+        if (distSq > maxDistanceSq){
             maxDistanceSq = distSq;
             furthestIndex = static_cast<int>(i);
         }
@@ -203,8 +197,7 @@ void EnemyMovement::UpdateDirectionAndRotation(float elapsedTime)
     direction.Normalize();
 
     // 進行方向に基づく回転を計算
-    if (direction.LengthSquared() > 0.0f)
-    {
+    if (direction.LengthSquared() > 0.0f){
         m_rotate = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(
             atan2(direction.x, direction.z),  // Yaw (Y軸周りの回転)
             0.0f,                             // Pitch
@@ -219,11 +212,11 @@ void EnemyMovement::UpdateDirectionAndRotation(float elapsedTime)
     float distanceToTarget = DirectX::SimpleMath::Vector3::Distance(m_position, targetPosition);
 
     // ゴールに到達したら、次のゴールに移動する
-    if (distanceToTarget < goalArrivalThreshold)
-    {
+    if (distanceToTarget < goalArrivalThreshold){
+        // 次のパスへ移行する
         m_currentGoalNo++;
-        if (m_currentGoalNo >= m_patrolPath.size())
-        {
+        // パスが全て通っていたら初期位置に戻す
+        if (m_currentGoalNo >= m_patrolPath.size()){
             m_currentGoalNo = 0;
         }
     }
@@ -232,8 +225,7 @@ void EnemyMovement::UpdateDirectionAndRotation(float elapsedTime)
 void EnemyMovement::CheckWallCollision()
 {
     // 壁との当たり判定
-    for (const auto& wall : m_wall)
-    {
+    for (const auto& wall : m_wall){
         mylib::Collision::CheckHit(m_boundingBox, wall->GetBoundingBox());
     }
 }
@@ -242,14 +234,15 @@ void EnemyMovement::CheckAvoidanceFromBombs()
 {
     // 回避条件：ボムが近い
     float avoidRadius = 3.5f;
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++){
+        // プレイヤーとボムの距離の計算
         float playerDistance = DirectX::SimpleMath::Vector3::Distance(m_position, m_enemy->GetPlayer()->GetBomState(i)->GetPosition());
-
-        if (playerDistance < avoidRadius)
-        {
-            // プレイヤーから最も遠いパトロール地点に逃げる
-            m_currentGoalNo = GetFurthestGoalFrom();
+        if (playerDistance < avoidRadius) {   
+            // 有るなら
+            if (m_enemy->GetPlayer()->GetBomState(i)->GetExist()){
+                // プレイヤーから最も遠いパトロール地点に逃げる
+                m_currentGoalNo = GetFurthestGoalFrom();
+            }
         }
     }
 }
@@ -257,15 +250,16 @@ void EnemyMovement::CheckAvoidanceFromBombs()
 void EnemyMovement::CheckCollisionWithPlayer()
 {
     // プレイヤーとの判定
-    if (mylib::Collision::BoundingCheckCollision(m_enemy->GetPlayer()->GetBoundingBox(), m_boundingSphere))
-    {
+    if (mylib::Collision::BoundingCheckCollision(m_enemy->GetPlayer()->GetBoundingBox(), m_boundingSphere)){
         m_enemy->ChangeState(m_enemy->GetEnemyTracking());
     }
 }
 
 void EnemyMovement::SyncWithEnemyState()
 {
+    // 位置を更新する
     m_enemy->SetPosition(m_position);
+    // バウディングボックスを更新する
     m_enemy->SetBoundingBox(m_boundingBox);
     m_enemy->SetBoundingSphere(m_boundingSphere);
 }

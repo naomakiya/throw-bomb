@@ -6,7 +6,10 @@
 #include "Game/Enemy/EnemyState.h"
 #include "Game/Factory/EnemyFactory.h"
 
-std::vector<std::unique_ptr<IEnemyState>> EnemyFactory::CreateEnemy( const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player, CommonResources* commonResources, std::vector <DirectX::SimpleMath::Vector3> map, const std::vector<DirectX::SimpleMath::Vector3> patrolPath)
+std::vector<std::unique_ptr<IEnemyState>> EnemyFactory::CreateEnemy( const std::vector<std::unique_ptr<Wall>>& wall, 
+	PlayerState* player, CommonResources* commonResources, 
+	std::vector <DirectX::SimpleMath::Vector3> map, 
+	const std::vector<DirectX::SimpleMath::Vector3> patrolPath)
 {
 	using namespace DirectX::SimpleMath;
 

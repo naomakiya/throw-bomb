@@ -2,6 +2,7 @@
   @file  Goal.h
   @brief ゴールクラス
 */
+
 #pragma once
 #ifndef GAOL_DEFINED
 #define GAOL_DEFINED
@@ -42,12 +43,15 @@ public:
 		const DirectX::SimpleMath::Matrix& projection) ;
 	//後処理を行う
 	void Finalize();
+
+private:
 	//モデル読み取り
-	void ModelLoad(ID3D11Device* device);
+	void LoadModel(ID3D11Device* device);
 	//シェイダーの読み取り
-	void ShaderLoad(ID3D11Device* device);
+	void LoadShader(ID3D11Device* device);
 	//バッファーの設定
 	void CreateConstanBuffer(ID3D11Device* device);
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -59,12 +63,12 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	//定数用バッファー
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
-	// スケール
-	float m_scale;
-	// 位置
-	DirectX::SimpleMath::Vector3 m_position;
 	// バウンディングボックス
 	DirectX::BoundingSphere m_boundingSphere;
+	// 位置
+	DirectX::SimpleMath::Vector3 m_position;
+	// スケール
+	float m_scale;
 	//時間の作成
 	float m_time;
 };

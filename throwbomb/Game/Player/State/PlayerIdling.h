@@ -30,6 +30,7 @@ public:
     void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
     // 後処理を行う
     void Finalize();
+
 private:
     // 共通リソース
     CommonResources* m_commonResources;
@@ -37,8 +38,6 @@ private:
     PlayerState* m_player;
     //壁
     const std::vector<std::unique_ptr<Wall>>& m_wall;
-    // 総時間
-    float m_totalSeconds;
     // Playerの顔モデル
     std::unique_ptr<DirectX::Model> m_playerface;
     // Playerのモデル
@@ -47,6 +46,10 @@ private:
     std::unique_ptr<DirectX::Model> m_playerHandL;
     // Playerの右手モデル
     std::unique_ptr<DirectX::Model> m_playerHandR;
+    // クォータニオン：モデルの回転を制御する
+    DirectX::SimpleMath::Quaternion m_rotate;
+    // バウンディングスフィア
+    DirectX::BoundingSphere m_boundingSphere;
     // 位置
     DirectX::SimpleMath::Vector3 m_position;
     //手を動かす
@@ -55,11 +58,9 @@ private:
     float m_time;
     //モデルの大きさ
     float m_modelScale;
-    // クォータニオン：モデルの回転を制御する
-    DirectX::SimpleMath::Quaternion m_rotate;
-    // バウンディングスフィア
-    DirectX::BoundingSphere m_boundingSphere;
+    // 総時間
+    float m_totalSeconds;
     // アニメーション用の変数
     float m_breathingFactor; 
 };
-#endif		// PLAYER_DEFINED
+#endif		// PLAYER_IDLING_DEFINED

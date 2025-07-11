@@ -49,27 +49,27 @@ void TitleOp::Initialize(CommonResources* resources)
     // モデルの読み込み
     auto fxExpl = std::make_unique<DirectX::DX11::EffectFactory>(device);
     fxExpl->SetDirectory(L"Resources/Models/exprol");
-    m_explosionSphere = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("Exprol").c_str(), *fxExpl);
+    m_explosionSphere = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("Exprol").c_str(), *fxExpl);
 
     auto fxBom = std::make_unique<DirectX::DX11::EffectFactory>(device);
     fxBom->SetDirectory(L"Resources/Models");
-    m_bomModel = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("Bom").c_str(), *fxBom);
+    m_bomModel = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("Bom").c_str(), *fxBom);
 
     m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
     m_dithering = std::make_unique<Dithering>(device);
     m_states = std::make_unique<DirectX::CommonStates>(device);
     //	プリミティブバッチの作成
     m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(context);
-    // 音量読み込み
-    LoadJson json("Resources/Json/Music.json");
-    m_bgmVolume = json.GetJson()["BGM"].value("Volume", 0.0f);
-    m_seVolume = json.GetJson()["SE"].value("Volume", 0.0f);
 
     ResetBombs();
 
-    // サウンド再生
-    auto& sound = Sound::GetInstance();
-    sound.Initialize();
+    // 音量の読み込み
+    LoadJson json("Resources/Json/Music.json");
+    m_bgmVolume = json.GetJson()["BGM"].value("Volume", 0.0f);
+    m_seVolume = json.GetJson()["SE"].value("Volume", 0.0f);
+    m_sound = std::make_unique<Sound>();
+    m_sound->Initialize();
+
    
 }
 
@@ -159,7 +159,8 @@ void TitleOp::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Sim
 
 void TitleOp::Finalize()
 {
-    Sound::GetInstance().Finalize();
+    // 音の終了処理
+    m_sound->Finalize();
 }
 
 
@@ -343,7 +344,7 @@ void TitleOp::CreateShader()
     cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
     HRESULT hr = device->CreateBuffer(&cbDesc, nullptr, &m_CBufferexp);
-    assert(SUCCEEDED(hr));
+    //assert(SUCCEEDED(hr));
 }
 
 void TitleOp::LoadTexture(const wchar_t* path)
@@ -400,7 +401,7 @@ void TitleOp::ShaderRender()
         context->Unmap(m_CBufferexp.Get(), 0);
     }
     else {
-        // ログに失敗したことを書くとデバッグしやすい
+        // ログの失敗
         OutputDebugStringA("Failed to map explosion constant buffer.\n");
     }
     // シェーダーにバッファを渡す

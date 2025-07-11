@@ -25,7 +25,7 @@ public:
 		DirectX::SimpleMath::Vector4    time;		// 時間情報
 	};
 	//時間の獲得
-	float GetTime()const { return m_time; }
+	float GetTime() const { return m_time; }
 public:
 	// コンストラクタ
 	Number();

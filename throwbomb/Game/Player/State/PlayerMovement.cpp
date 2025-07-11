@@ -2,18 +2,19 @@
   @file  PlayerMovement.cpp
   @brief プレイヤ移動状態クラス
 */
+
 #include "pch.h"
-#include"Framework/CommonResources.h"
+#include "Framework/CommonResources.h"
 #include "Framework/DeviceResources.h"
-#include"Game/Player/State/PlayerMovement.h"
-#include"Game/Player/State/PlayerBomHand.h"
+#include "Game/Player/State/PlayerMovement.h"
+#include "Game/Player/State/PlayerBomHand.h"
 #include "Game/Player/State/PlayerIdling.h"
-#include"Game/Player/PlayerState.h"
+#include "Game/Player/PlayerState.h"
 #include "Libraries/MyLib/InputManager.h"
-#include"Game/Wall/Wall.h"
-#include"Game/Camera/Camera.h"
-#include"Game/Bom/BomState.h"
-#include <Game/ResourceManager/ResourceManager.h>
+#include "Game/Wall/Wall.h"
+#include "Game/Camera/Camera.h"
+#include "Game/Bom/BomState.h"
+#include "Game/ResourceManager/ResourceManager.h"
 
 
 //---------------------------------------------------------
@@ -28,8 +29,8 @@ PlayerMovement::PlayerMovement(Camera* camera,PlayerState* playerState, const st
 	m_playerHandR{},
 	m_commonResources{},
 	m_wall{ wall },
-	m_angle{},
-    m_scale{},
+	m_angle{ 0.0f },
+    m_scale{ 0.0f },
 	m_rotate{},
 	m_camera{camera},
 	m_hand{0.0f},
@@ -59,18 +60,21 @@ void PlayerMovement::Initialize(CommonResources* resources)
 	std::unique_ptr<DirectX::DX11::EffectFactory> fx = std::make_unique<DirectX::DX11::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models/Player");
 	//モデルをロードする
-	m_playerface = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("PlayerFace").c_str(), *fx);
-	m_playerfaceBody = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("PlayerBody").c_str(), *fx);
-	m_playerHandL = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("PlayerHand").c_str(), *fx);
-	m_playerHandR = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("PlayerHand").c_str(), *fx);
+	m_playerface = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerFace").c_str(), *fx);
+	m_playerfaceBody = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerBody").c_str(), *fx);
+	m_playerHandL = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerHand").c_str(), *fx);
+	m_playerHandR = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("PlayerHand").c_str(), *fx);
 
 }
 
 //事前準備
 void PlayerMovement::PreUpdate()
 {
+	// 前の状態の位置情報を取得
 	m_postion = m_player->GetPosition();
+	// 前の状態の方向情報を取得
 	m_rotate = m_player->GetAngle();
+	// 速度を消す
 	m_vel = 0.0f;
 }
 
@@ -79,13 +83,14 @@ void PlayerMovement::PreUpdate()
 //---------------------------------------------------------
 void PlayerMovement::Update(const float& elapsedTime)
 {
+	//　位置情報の更新
+	m_postion = m_player->GetPosition();
 	// 回転速度を調整
 	m_handAngle = elapsedTime * 5.0f;
-	m_postion = m_player->GetPosition();
 	//移動
 	Movement(elapsedTime);
 	// プレイヤーの更新
-	this->PostUpdate();
+	PostUpdate();
 }
 
 //---------------------------------------------------------
@@ -96,6 +101,7 @@ void PlayerMovement::PostUpdate()
 	// プレイヤーの位置を更新
 	m_player->SetPosition(m_postion);
 	m_player->SetAngle(m_rotate);
+
 }
 
 //---------------------------------------------------------
@@ -107,6 +113,9 @@ void PlayerMovement::Render(const DirectX::SimpleMath::Matrix& view, const Direc
 
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
+
+	//壁になどの触れた後の位置情報を取得
+	m_postion = m_player->GetPosition();
 
 	// ワールド行列を更新する
 	Matrix world = Matrix::CreateScale(m_player->PLAYERMODLSCALE);
@@ -141,8 +150,7 @@ void PlayerMovement::Render(const DirectX::SimpleMath::Matrix& view, const Direc
 	Matrix legL = Matrix::CreateScale(m_player->PLAYERMODLSCALE) * Matrix::CreateFromQuaternion(m_rotate) * Matrix::CreateTranslation(m_postion + legOffsetL);
 	Matrix legR = Matrix::CreateScale(m_player->PLAYERMODLSCALE) * Matrix::CreateFromQuaternion(m_rotate) * Matrix::CreateTranslation(m_postion + legOffsetR);
 
-	if (!m_player->GetHitEnemy())
-	{
+	if (!m_player->GetHitEnemy()){
 		// モデルを表示する
 		m_playerface->Draw(context, *states, world, view, projection);
 		m_playerfaceBody->Draw(context, *states, world2, view, projection);
@@ -151,8 +159,8 @@ void PlayerMovement::Render(const DirectX::SimpleMath::Matrix& view, const Direc
 		m_playerHandL->Draw(context, *states, legL, view, projection);
 		m_playerHandR->Draw(context, *states, legR, view, projection);
 	}
-	else
-	{
+	else{
+		// 透明にする
 		m_player->EnemyHitFlashing(*m_playerface, world, view, projection);
 		m_player->EnemyHitFlashing(*m_playerfaceBody, world2, view, projection);
 		m_player->EnemyHitFlashing(*m_playerHandL, handL, view, projection);

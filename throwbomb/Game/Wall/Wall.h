@@ -2,6 +2,7 @@
   @file  Wall.h
   @brief 壁クラス
 */
+
 #pragma once
 #ifndef WALL_DEFINED
 #define WALL_DEFINED
@@ -57,6 +58,7 @@ public:
 	void Finalize();
 	//壁のバウンディングボックス同士の当たり判定
 	DirectX::SimpleMath::Vector3 CheckHitAndResolve(const DirectX::BoundingBox& a, const DirectX::BoundingBox& b);
+
 private:
       // 共通リソース
       CommonResources* m_commonResources;  
@@ -68,12 +70,12 @@ private:
 	  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;  
 	  // 壁の種類
       WallType m_wallType; 
-	  // 壁の位置
-      DirectX::SimpleMath::Vector3 m_position;  
 	  // 壁モデル
 	  std::shared_ptr<DirectX::Model> m_wallModel;
 	  // バウンディングボックス（当たり判定用）
       DirectX::BoundingBox m_boundingBox;  
+	  // 壁の位置
+	  DirectX::SimpleMath::Vector3 m_position;
 	  // スケール倍率
 	  float m_scale;
 	  //モデルスケール

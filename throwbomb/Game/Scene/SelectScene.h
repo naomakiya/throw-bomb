@@ -9,6 +9,7 @@
 // 前方宣言
 class CommonResources;
 class SceneManager;
+class Sound;
 
 class SelectScene final :  public IScene
 {
@@ -43,6 +44,8 @@ private:
 	CommonResources* m_commonResources;
 	// シーン管理クラス
 	SceneManager* m_sceneManager;
+	// 音
+	std::unique_ptr<Sound> m_sound;
 
 	// 描画関連
 	// スプライトバッチ

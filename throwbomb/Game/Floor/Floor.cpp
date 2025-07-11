@@ -59,7 +59,7 @@ void Floor::Initialize(CommonResources* resources)
 	// テクスチャのロード
 	CreateWICTextureFromFile(
 		device,
-		ResourceManager::getTexturePath("Floor").c_str(), 
+		ResourceManager::GetTexturePath("Floor").c_str(), 
 		nullptr,
 		m_Texture.GetAddressOf()
 	);

@@ -2,6 +2,7 @@
   @file  Collision.h
   @brief 当たり判定クラス
 */
+
 #pragma once
 #ifndef  COLLISION_DEFINED
 #define  COLLISION_DEFINED
@@ -33,7 +34,8 @@ namespace mylib
 		//箱同士のバウディングボックスの当たり判定
 		static bool BoundingCheckBoxCollision(const DirectX::BoundingBox& boxa, const DirectX::BoundingBox& boxb);
 		// プレイヤーとテクスチャーの当たり判定
-		static bool CheckPlayerTextureCollision(const DirectX::SimpleMath::Vector3& playerPosition, const DirectX::SimpleMath::Vector3& playerSize, const DirectX::SimpleMath::Vector3& texturePosition, const float textureWidth, const float textureDepth);
+		static bool CheckPlayerTextureCollision(const DirectX::SimpleMath::Vector3& playerPosition, const DirectX::SimpleMath::Vector3& playerSize, 
+			const DirectX::SimpleMath::Vector3& texturePosition, const float textureWidth, const float textureDepth);
 		// 壁とプレイヤーの当たり判定を行う
 		static DirectX::SimpleMath::Vector3 CheckHit(const DirectX::BoundingBox& boxA, const DirectX::BoundingBox& boxB);
 		//コリジョンメッシュとの当たり判定

@@ -13,6 +13,7 @@ class Wall;
 class PlayerState;
 class Dithering;
 class Smork;
+class Sound;
 
 class BomExplosion :public IBomState
 {
@@ -52,6 +53,8 @@ private:
     PlayerState* m_player;
     //煙パーティクル
     std::unique_ptr<Smork> m_smork;
+    // 音
+    std::unique_ptr<Sound> m_sound;
     // 壁
     const std::vector<std::unique_ptr<Wall>>& m_wall;
     // ピクセルシェーダ
@@ -87,5 +90,7 @@ private:
     float m_cnt;
     //経過時間
     float m_elapsedTime;
+    // SEの音量を保存
+    float m_seVolume;
 };
 #endif		// BOMEXPLOSION_DEFINED

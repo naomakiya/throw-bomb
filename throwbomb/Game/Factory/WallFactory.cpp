@@ -13,6 +13,9 @@ std::vector<std::unique_ptr<Wall>> WallFactory::CreateWalls(
     std::vector<int> typemap,
     std::vector<DirectX::SimpleMath::Vector3> map)
 {
+    using namespace DirectX;
+
+
     auto device = commonResources->GetDeviceResources()->GetD3DDevice();
     // 配列を宣言する
     std::vector<std::unique_ptr<Wall>> walls ;
@@ -23,40 +26,41 @@ std::vector<std::unique_ptr<Wall>> WallFactory::CreateWalls(
     }
 
     //読み込み準備
-    std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
+    std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);
     fx->SetDirectory(L"Resources/Models");
     //壁モデルの読み取り
-    std::shared_ptr<DirectX::Model> wallModel = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("Wall").c_str(), *fx);
+    std::shared_ptr<Model> wallModel = Model::CreateFromCMO(device, ResourceManager::GetModelPath("Wall").c_str(), *fx);
     if (wallModel == nullptr)
     {
         assert(wallModel);
     }
     // 下記が無いと白くなりすぎる
-    wallModel->UpdateEffects([&](DirectX::IEffect* effect) {
-        DirectX::BasicEffect* basic = dynamic_cast<DirectX::BasicEffect*>(effect);
+    wallModel->UpdateEffects([&](IEffect* effect) {
+        BasicEffect* basic = dynamic_cast<BasicEffect*>(effect);
         if (basic != nullptr) {
-            basic->SetDiffuseColor(DirectX::Colors::Black);
+            basic->SetDiffuseColor(Colors::Black);
 
         }
         });
+   
     //壁モデルの読み取り
-    std::shared_ptr<DirectX::Model> wallModelFloor = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("WallFloor").c_str(), *fx);
-    if (wallModel == nullptr)
-    {
+    std::shared_ptr<Model> wallModelFloor = Model::CreateFromCMO(device, ResourceManager::GetModelPath("WallFloor").c_str(), *fx);
+
+    if (wallModel == nullptr){
         assert(wallModel);
     }
     // 下記が無いと白くなりすぎる
-    wallModelFloor->UpdateEffects([&](DirectX::IEffect* effect) {
-        DirectX::BasicEffect* basic = dynamic_cast<DirectX::BasicEffect*>(effect);
+    wallModelFloor->UpdateEffects([&](IEffect* effect) {
+        BasicEffect* basic = dynamic_cast<BasicEffect*>(effect);
         if (basic != nullptr) {
-            basic->SetDiffuseColor(DirectX::Colors::White);
+            basic->SetDiffuseColor(Colors::White);
 
         }
         });
 
 
     // ひびの壁
-    std::shared_ptr<DirectX::Model> wllcrack = DirectX::Model::CreateFromCMO(device, ResourceManager::getModelPath("CrackWall").c_str(), *fx);
+    std::shared_ptr<Model> wllcrack = Model::CreateFromCMO(device, ResourceManager::GetModelPath("CrackWall").c_str(), *fx);
 
 
     // 壁の情報を処理する

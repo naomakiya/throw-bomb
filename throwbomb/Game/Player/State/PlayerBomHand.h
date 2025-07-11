@@ -3,8 +3,8 @@
   @brief プレイヤボム持ち状態クラス
 */
 #pragma once
-#ifndef PLAYERBOMHAND_DEFINED
-#define PLAYERBOMHAND_DEFINED
+#ifndef PLAYER_BOMHAND_DEFINED
+#define PLAYER_BOMHAND_DEFINED
 #include"Interface/IPlayerState.h"
 
 class CommonResources;
@@ -17,23 +17,25 @@ class PlayerBomHand :public IPlayerState
 public:
 	// コンストラクタ
 	PlayerBomHand(Camera* camera,PlayerState* playerState, const std::vector<std::unique_ptr<Wall>>& wall);
-	//デストラクタ
+	// デストラクタ
 	~PlayerBomHand();
-	//初期化
+	// 初期化
 	void Initialize(CommonResources* resources);
 	// 事前更新する
 	void PreUpdate();
-	//更新する
+	// 更新する
 	void Update(const float& elapsedTime);
 	// 事後更新する
 	void PostUpdate();
-	//描画する
+	// 描画する
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection) ;
-	//後処理を行う
+	// 後処理を行う
 	void Finalize();
+
 private:
 	//移動
 	void Movement(const float& elapsedTime);
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -66,4 +68,4 @@ private:
 	//時間
 	float m_time;
 };
-#endif		// PLAYER_DEFINED
+#endif		// PLAYER_BOMHAND

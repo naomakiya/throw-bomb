@@ -113,7 +113,7 @@ void PlayerState::Update(const float& elapsedTime)
 	CheckCollisionWithFloor();
 	// キー関係
 	CheckKeyboard();
-	// 現在持っているボムを投げる
+	// 現在ボムを持っているか
 	if(IsThroeableBom()){
 		// 投げる
 		m_isThrow = true;
@@ -131,7 +131,7 @@ void PlayerState::Update(const float& elapsedTime)
 	// バウディングボックスの更新
 	m_boundingBox.Center = m_position;
 	// プレイヤーが敵に触れた時
-	this->EnemyHit(elapsedTime);
+	EnemyHit(elapsedTime);
 }
 
 //---------------------------------------------------------
@@ -207,15 +207,32 @@ void PlayerState::CheckCollisionWithFloor()
 //---------------------------------------------------------
 void PlayerState::CheckCollisionWithWall()
 {
-	for (const auto& wall : m_wall)
-	{
+	// 軸方向に一度押し返したら2度目は押し返さない用の変数
+	bool m_isYOn = false;
+	bool m_isXOn = false;
+	bool m_isZOn = false;
+
+	for (const auto& wall : m_wall){
 		//壁との当たり判定をして、差分を格納する
 		m_pushBack = wall->CheckHitAndResolve(m_boundingBox, wall->GetBoundingBox());
 
 		// 押し戻しが発生した場合のみポジションを更新
-		if (std::abs(m_pushBack.Length()) > 0.00f || std::abs(m_pushBack.Length()) < 0.00f)
-		{
-			m_position += m_pushBack;
+		if (std::abs(m_pushBack.Length()) != 0.00f ){
+
+			// 
+			if (m_pushBack.y > 0.0f && !m_isYOn){
+				m_position.y += m_pushBack.y;
+				m_isYOn = true;
+			}
+			if (m_pushBack.x != 0.0f  && !m_isXOn){
+				m_position.x += m_pushBack.x;
+				m_isXOn = true;
+			}
+			if (m_pushBack.z != 0.0f  && !m_isZOn){
+				m_position.z += m_pushBack.z;
+				m_isZOn = true;
+			}
+
 		}
 	}
 }
@@ -227,18 +244,20 @@ void PlayerState::CheckKeyboard()
 {
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
-
-	if (kbTracker->pressed.X)
-	{
+	// Xボタンが押されたら
+	if (kbTracker->pressed.X){
+		// ボムの番号の獲得
 		auto it = std::find_if(m_bom.begin(), m_bom.end(),
 			[](const auto& bom) { return !bom->GetExist(); });
-
-		if (it != m_bom.end())
-		{
+		// 使われていないのがあったなら
+		if (it != m_bom.end()){
+			// 有ることにする
 			(*it)->SetExist(true);
+			// プレイヤーの状態を変更
 			ChangeState(m_playerBomHand.get());
 			// インデックスを取得
 			m_index = static_cast<int>(std::distance(m_bom.begin(), it));
+			//　投げていないことにする
 			m_isThrow = false;
 		}
 	}
@@ -250,32 +269,38 @@ void PlayerState::CheckKeyboard()
 void PlayerState::EnemyHit(const float& elapsedTime)
 {
 	// 衝突時のタイマーを更新
-	if (m_isEnemyHit)
-	{
+	if (m_isEnemyHit){
+		//　いないことにする
 		m_exist = false;
+
+		// 時間計測開始
 		m_hitTimer += elapsedTime;
 
 		// 点滅のためのタイマーを更新
 		m_flashTimer += elapsedTime;
 
 		// 点滅状態を切り替える（0.1秒ごとに切り替え）
-		if (m_flashTimer >= 0.1f)
-		{
+		if (m_flashTimer >= 0.1f){
+			// 切り替える
 			m_isFlashing = !m_isFlashing;
+			// 時間をリセットする
 			m_flashTimer = 0.0f;
 		}
 
 		// 3秒経過したら元に戻す
-		if (m_hitTimer >= 3.0f)
-		{
+		if (m_hitTimer >= 3.0f){
+			// 敵との当たり判定をしてないことにする
 			m_isEnemyHit = false;
+			// 透明でなくす
 			m_isFlashing = false;
+			// 当たってからの時間をリセット
 			m_hitTimer = 0.0f;
+			// 点滅タイマーのリセット
 			m_flashTimer = 0.0f;
 		}
 	}
-	else
-	{
+	else{
+		// 存在している
 		m_exist = true;
 	}
 }
@@ -296,7 +321,6 @@ void PlayerState::InitializeShadow()
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	
-
 	m_shadow = std::make_unique<Shadow>();
 	m_shadow->Initialize(device, context);
 }
@@ -306,8 +330,8 @@ void PlayerState::InitializeShadow()
 //---------------------------------------------------------
 void PlayerState::InitializeBom()
 {
-	for (int i = 0; i < BOMMAX; i++)
-	{
+	// 出せるボムの数作成
+	for (int i = 0; i < BOMMAX; i++){
 		auto bom = std::make_unique<BomState>(this, m_wall);
 		bom->Initialize(m_commonResources);
 		m_bom.push_back(std::move(bom));
@@ -339,6 +363,7 @@ void PlayerState::InitializeCollisionDebugRenderer()
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+
 	//デバック用のコリジョン
 	m_collisionDebugRenderer = std::make_unique<CollisionDebugRenderer>(device, context);
 }
@@ -346,7 +371,7 @@ void PlayerState::InitializeCollisionDebugRenderer()
 //---------------------------------------------------------
 //透明と透明じゃない状態を入れ替える
 //---------------------------------------------------------
-void PlayerState::EnemyHitFlashing(const DirectX::Model& model, const DirectX::FXMMATRIX world, const  DirectX::CXMMATRIX view, const  DirectX::CXMMATRIX projection)
+void PlayerState::EnemyHitFlashing(const DirectX::Model& model, const DirectX::FXMMATRIX& world, const  DirectX::CXMMATRIX& view, const  DirectX::CXMMATRIX& projection)
 {
 	using namespace DirectX::SimpleMath;
 
@@ -426,6 +451,8 @@ void PlayerState::CheckBom()
 //---------------------------------------------------------
 bool PlayerState::IsThroeableBom()
 {
+	// 現在ぼボムの状態を取得
 	auto bomState = GetBomState(m_index)->GetBomPresent();
+	// ボムを投げたかボムを押したら投げた投げたことにする
 	return (bomState == IBomState::MOVEMENT || bomState == IBomState::STAY) && !m_isThrow;
 }

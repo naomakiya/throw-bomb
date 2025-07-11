@@ -60,7 +60,7 @@ void Fade::Create(DX::DeviceResources* pDR)
 
 	//	画像の読み込み
 	LoadTexture(L"Resources/Textures/Black.png");
-	LoadTexture(L"Resources/Textures/hight.jpg");
+	LoadTexture(L"Resources/Textures/Explosion.jpg");
 
 	//	プリミティブバッチの作成
 	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());

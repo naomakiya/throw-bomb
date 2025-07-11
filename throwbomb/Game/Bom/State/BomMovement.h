@@ -33,26 +33,26 @@ public:
      void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection) override;
      // 後処理を行う
      void Finalize() override;
+
 private:
      //衝突判定
-     void CheckHit(DirectX::BoundingBox boundingBox,const bool IsWall);
+     void HitCheck(DirectX::BoundingBox boundingBox,const bool IsWall);
      //爆弾のバウンド
      void HandleCollision();
-private:
 
-    // 重力
-    static constexpr float GravityY = -9.81f;
+public:
     // 反発係数
-    static constexpr float BounceFactor = 0.8f;
+    static constexpr float BOUNCEFACTOR = 0.8f;
     // カウントダウン
-    static constexpr float CountdownTime = 3.5f;
-    // 当たり判定の大きさ
-    static constexpr float BoundingSphereRadius = 0.5f;
+    static constexpr float COUNTDOWNTIME = 3.5f;
     // 初期速度
-    static constexpr float LaunchSpeed = 10.0f;
-    static constexpr float GroundHeight = 0.7f;
-    static constexpr float MinHeight = 0.0f;
+    static constexpr float LAUNCHSPEED = 10.0f;
+    // 地面の高さ
+    static constexpr float GROUNDHEIGHT = 0.7f;
+    // 最少の高さ
+    static constexpr float MINHEIGHT = 0.0f;
 
+private:
     // 共通リソース
     CommonResources* m_commonResources;
     // プレイヤー
@@ -66,14 +66,16 @@ private:
 
     //ボムのモデル
     std::unique_ptr<DirectX::Model> m_bomModel;
+    // バウンディングスフィア
+    DirectX::BoundingSphere m_boundingSphere;
+
     // 位置
     DirectX::SimpleMath::Vector3 m_position;
     //速度
     DirectX::SimpleMath::Vector3 m_velocity;
     //加速度
     DirectX::SimpleMath::Vector3 m_gravity;
-    // バウンディングスフィア
-    DirectX::BoundingSphere m_boundingSphere;
+    
 
     //バウンドしているか
     bool m_isBounce;

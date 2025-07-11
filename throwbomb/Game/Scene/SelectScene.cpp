@@ -12,6 +12,7 @@
 #include"Game/ResourceManager/ResourceManager.h"
 #include <Game/Sound/Sound.h>
 #include "SceneManager.h"
+#include <Framework/LoadJson.h>
 
 
 
@@ -92,9 +93,17 @@ void SelectScene::Initialize(CommonResources* resources)
 	// シーン変更フラグを初期化
 	m_isChangeScene = false;
 	m_currentSelection = Selection::ONE;
-	Sound::GetInstance().Initialize();
-	Sound::GetInstance().PlayBGM(ResourceManager::getBGMPath("TitleBGM").c_str(), true);
-	Sound::GetInstance().SetVolume(0.1f);
+
+	// 音量の読み込み
+	LoadJson json("Resources/Json/Music.json");
+	// BGMの音量の設定
+	float m_bgmVolume = json.GetJson()["BGM"].value("Volume", 0.0f);
+	m_sound = std::make_unique<Sound>();
+	m_sound->Initialize();
+	// BGMの再生
+	m_sound->PlayBGM(ResourceManager::GetBGMPath("TitleBGM").c_str(), true);
+	// 音量の設定
+	m_sound->SetVolume(m_bgmVolume);
 }
 
 //---------------------------------------------------------
@@ -149,7 +158,8 @@ void SelectScene::Render()
 //---------------------------------------------------------
 void SelectScene::Finalize()
 {
-	Sound::GetInstance().Finalize();
+	// 音の終了処理
+	m_sound->Finalize();
 }
 
 //---------------------------------------------------------
@@ -216,7 +226,7 @@ void SelectScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("1").c_str(),
+			ResourceManager::GetTexturePath("1").c_str(),
 			nullptr,
 			m_one.ReleaseAndGetAddressOf()
 		)
@@ -225,7 +235,7 @@ void SelectScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("2").c_str(),
+			ResourceManager::GetTexturePath("2").c_str(),
 			nullptr,
 			m_two.ReleaseAndGetAddressOf()
 		)
@@ -234,7 +244,7 @@ void SelectScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("3").c_str(),
+			ResourceManager::GetTexturePath("3").c_str(),
 			nullptr,
 			m_three.ReleaseAndGetAddressOf()
 		)
@@ -243,7 +253,7 @@ void SelectScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("TitleButton").c_str(),
+			ResourceManager::GetTexturePath("TitleButton").c_str(),
 			nullptr,
 			m_title.ReleaseAndGetAddressOf()
 		)
@@ -253,7 +263,7 @@ void SelectScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("Floor").c_str(),
+			ResourceManager::GetTexturePath("Floor").c_str(),
 			nullptr,
 			m_background.ReleaseAndGetAddressOf()
 		)
@@ -262,7 +272,7 @@ void SelectScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("Box").c_str(),
+			ResourceManager::GetTexturePath("Box").c_str(),
 			nullptr,
 			m_selectBox.ReleaseAndGetAddressOf()
 		)

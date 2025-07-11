@@ -14,15 +14,18 @@
 #include "Game/Screen.h"
 #include "Game/ResourceManager/ResourceManager.h"
 #include "TitleScene.h"
-#include <Game/Sound/Sound.h>
-#include "Game/ResourceManager/ResourceManager.h"
+#include "Game/Sound/Sound.h"
+#include <Framework/LoadJson.h>
+#include "SceneManager.h"
+#include "Game/ResultParamete/ResultParamete.h"
+#include "Game/UI/Number/NumberUI.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
-ResultScene::ResultScene()
+ResultScene::ResultScene(SceneManager* sceneManager)
 	:
 	m_commonResources{},
 	m_projection{},
@@ -37,7 +40,10 @@ ResultScene::ResultScene()
 	m_isSelect(false),
 	m_scale{ 1.0f },
 	m_elapsedTime{0},
-	m_select{}
+	m_select{},
+	m_sceneManager{sceneManager},
+	m_numberUI{},
+	m_score{}
 
 {
 
@@ -94,10 +100,25 @@ void ResultScene::Initialize(CommonResources* resources)
 	// シーン変更フラグを初期化する
 	m_isChangeScene = false;
 
-	// 音のインスタンスの取得　再生
-	auto& sound = Sound::GetInstance();
-	sound.Initialize();
-	sound.PlayBGM(ResourceManager::getBGMPath("ResultBGM").c_str(), true);
+	// 音量の読み込み
+	LoadJson json("Resources/Json/Music.json");
+	// BGMの音量の設定
+	float m_bgmVolume = json.GetJson()["BGM"].value("Volume", 0.0f);
+
+	m_sound = std::make_unique<Sound>();
+	m_sound->Initialize();
+	// BGMの再生
+	m_sound->PlayBGM(ResourceManager::GetBGMPath("ResultBGM").c_str(), true);
+	// 音量の設定
+	m_sound->SetVolume(m_bgmVolume);
+
+
+	
+	
+	m_score = m_sceneManager->GetResultParamete()->GetScore();
+	
+	m_numberUI = std::make_unique<NumberUI>(static_cast<float>(m_score));
+	m_numberUI->Create(m_commonResources->GetDeviceResources(),true);
 }
 
 //---------------------------------------------------------
@@ -114,40 +135,44 @@ void ResultScene::Update(float elapsedTime)
 	switch (m_currentSelection)
 	{
 	case ResultScene::Selection::Select:
-		if (kbTracker->pressed.Up)
+		if (kbTracker->pressed.Left)
 		{
 			m_currentSelection = Selection::Title;
 		}
-		else if (kbTracker->pressed.Down)
+		else if (kbTracker->pressed.Right)
 		{
 			m_currentSelection = Selection::ReStart;
 		}
+		m_slectPos = DirectX::SimpleMath::Vector2{ Screen::CENTER_X - 300, Screen::CENTER_Y + 250 };
 		break;
 	case ResultScene::Selection::ReStart:
-		
-		if (kbTracker->pressed.Up)
+
+		if (kbTracker->pressed.Left)
 		{
 			m_currentSelection = Selection::Select;
 		}
-		else if (kbTracker->pressed.Down)
+		else if (kbTracker->pressed.Right)
 		{
 			m_currentSelection = Selection::Title;
 		}
+		m_slectPos = DirectX::SimpleMath::Vector2{ Screen::CENTER_X , Screen::CENTER_Y + 250 };
 		break;
 	case ResultScene::Selection::Title:
-		if (kbTracker->pressed.Up)
+		if (kbTracker->pressed.Left)
 		{
 			m_currentSelection = Selection::ReStart;
 		}
-		else if (kbTracker->pressed.Down)
+		else if (kbTracker->pressed.Right)
 		{
 			m_currentSelection = Selection::Select;
 		}
+
+		m_slectPos = DirectX::SimpleMath::Vector2{ Screen::CENTER_X + 300, Screen::CENTER_Y + 250 };
 		break;
 	default:
 		break;
 	}
-	
+
 
 	// スペースキーが押されたら
 	if (kbTracker->pressed.Space)
@@ -171,7 +196,7 @@ void ResultScene::Update(float elapsedTime)
 	// 経過時間を更新
 	m_elapsedTime += elapsedTime;
 
-	m_selectedScale = (sin(m_elapsedTime) + 2) / 3;
+	m_scale = 0.125f * sinf(m_elapsedTime) + 1.5f;
 }
 
 //---------------------------------------------------------
@@ -183,6 +208,7 @@ void ResultScene::Render()
 	//テクスチャーの描画
 	this->TextureRender();
 	
+	m_numberUI->Render(DirectX::SimpleMath::Vector3(0.0f, -0.2f, 0.0f));
 }
 
 //---------------------------------------------------------
@@ -190,7 +216,8 @@ void ResultScene::Render()
 //---------------------------------------------------------
 void ResultScene::Finalize()
 {
-	Sound::GetInstance().Finalize();
+	// 音の終了処理
+	m_sound->Finalize();
 }
 
 //---------------------------------------------------------
@@ -223,7 +250,7 @@ void ResultScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("Clear").c_str(),
+			ResourceManager::GetTexturePath("Clear").c_str(),
 			nullptr,
 			m_clear.ReleaseAndGetAddressOf()
 		)
@@ -233,9 +260,9 @@ void ResultScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("Floor").c_str(),
+			ResourceManager::GetTexturePath("Floor").c_str(),
 			nullptr,
-			m_background.ReleaseAndGetAddressOf()
+			m_backGround.ReleaseAndGetAddressOf()
 		)
 	);
 
@@ -243,7 +270,7 @@ void ResultScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("ReTry").c_str(),
+			ResourceManager::GetTexturePath("ReTry").c_str(),
 			nullptr,
 			m_reStart.ReleaseAndGetAddressOf()
 		)
@@ -252,7 +279,7 @@ void ResultScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("TitleButton").c_str(),
+			ResourceManager::GetTexturePath("TitleButton").c_str(),
 			nullptr,
 			m_title.ReleaseAndGetAddressOf()
 		)
@@ -261,9 +288,37 @@ void ResultScene::LoadResource(ID3D11Device1* device)
 	DX::ThrowIfFailed(
 		DirectX::CreateWICTextureFromFile(
 			device,
-			ResourceManager::getTexturePath("Select").c_str(),
+			ResourceManager::GetTexturePath("Select").c_str(),
 			nullptr,
 			m_select.ReleaseAndGetAddressOf()
+		)
+	);
+	// セレクトBox
+	DX::ThrowIfFailed(
+		DirectX::CreateWICTextureFromFile(
+			device,
+			ResourceManager::GetTexturePath("Box").c_str(),
+			nullptr,
+			m_selectBox.ReleaseAndGetAddressOf()
+		)
+	);
+	// スコア
+	DX::ThrowIfFailed(
+		DirectX::CreateWICTextureFromFile(
+			device,
+			ResourceManager::GetTexturePath("Score").c_str(),
+			nullptr,
+			m_scoreTextur.ReleaseAndGetAddressOf()
+		)
+	);
+
+	// Aスコア
+	DX::ThrowIfFailed(
+		DirectX::CreateWICTextureFromFile(
+			device,
+			ResourceManager::GetTexturePath("A").c_str(),
+			nullptr,
+			m_aScore.ReleaseAndGetAddressOf()
 		)
 	);
 }
@@ -278,29 +333,35 @@ void ResultScene::TextureRender()
 
 	// 背景とステージクリアの描画（変更なし）
 	Vector2 post(0.0f, 0.0f);
-	m_spriteBatch->Draw(m_background.Get(), post, nullptr, Colors::White, 0.0f, Vector2(0, 0), m_scale * 5.0f);
-	Vector2 pos(Screen::CENTER_X, 50.0f);
-	m_spriteBatch->Draw(m_clear.Get(), pos, nullptr, {1,1,1,1.0}, 0.0f, Vector2(320, 24), m_scale * 1.5);
+	m_spriteBatch->Draw(m_backGround.Get(), post, nullptr, Colors::White, 0.0f, Vector2(0, 0), 1 * 5.0f);
+	Vector2 pos(Screen::CENTER_X, 0.0f);
+	m_spriteBatch->Draw(m_clear.Get(), pos, nullptr, {1,1,1,1.0}, 0.0f, Vector2(320, 24), 1 * 1.5);
 
-	// スタートとエンド選択肢の描画
-	float restartScale = (m_currentSelection == Selection::ReStart) ? m_selectedScale : m_unselectedScale;
-	float selectScale = (m_currentSelection == Selection::Select) ? m_selectedScale : m_unselectedScale;
-	float titleScale = (m_currentSelection == Selection::Title) ? m_selectedScale : m_unselectedScale;
+	
+	Vector2 restartPos(Screen::CENTER_X - 300, Screen::CENTER_Y + 250);
+	Vector2 slectPos(Screen::CENTER_X, Screen::CENTER_Y + 250);
+	Vector2 titlePos(Screen::CENTER_X + 300, Screen::CENTER_Y + 250);
 
-	Vector2 slectPos(Screen::CENTER_X, Screen::CENTER_Y );
-	Vector2 restartPos(Screen::CENTER_X, Screen::CENTER_Y + 125);
-	Vector2 titlePos(Screen::CENTER_X, Screen::CENTER_Y + 250);
-
+	// 選択肢の描画
+	m_spriteBatch->Draw(m_selectBox.Get(), m_slectPos, nullptr, Colors::Black, 0.0f,
+		Vector2(100.0f, 50.0f), m_scale);
 	// 選択肢の描画
 	m_spriteBatch->Draw(m_reStart.Get(), restartPos, nullptr, Colors::White, 0.0f,
-		Vector2(140, 105), restartScale);
+		Vector2(140, 105), 1);
 	// 選択肢の描画
 	m_spriteBatch->Draw(m_select.Get(), slectPos, nullptr, Colors::White, 0.0f,
-		Vector2(140, 105), selectScale);
+		Vector2(140, 105), 1);
 
 	// エンド選択肢の描画
 	m_spriteBatch->Draw(m_title.Get(), titlePos, nullptr, Colors::White , 0.0f,
-		Vector2(140, 105), titleScale);
-
+		Vector2(140, 105), 1);
+	// スコアの文字
+	m_spriteBatch->Draw(m_scoreTextur.Get(), Vector2(Screen::CENTER_X, Screen::CENTER_Y - 50), nullptr, Colors::Black, 0.0f,
+		Vector2(320.0f, 50.0f), 1);
+	if (m_score > 20000)
+	{
+		m_spriteBatch->Draw(m_aScore.Get(), Vector2(Screen::CENTER_X- 500, Screen::CENTER_Y), nullptr, Colors::White, 0.0f,
+			Vector2(5.0f, 50.0f), 2.5f);
+	}
 	m_spriteBatch->End();
 }
