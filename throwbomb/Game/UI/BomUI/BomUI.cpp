@@ -2,6 +2,7 @@
 	@file	BomUI.cpp
 	@brief	ボムUIクラス
 */
+
 #include "pch.h"
 #include "Game/UI/BomUI/BomUI.h"
 #include "Framework/CommonResources.h"
@@ -43,8 +44,10 @@ BomUI::~BomUI()
 //---------------------------------------------------------
 void BomUI::Initialize(CommonResources* resources, DirectX::DX11::SpriteBatch* spriteBatch)
 {
+	using namespace DirectX;
 	assert(resources);
     assert(spriteBatch);
+
 	m_commonResources = resources;
 	m_spriteBatch = spriteBatch;
 
@@ -52,7 +55,7 @@ void BomUI::Initialize(CommonResources* resources, DirectX::DX11::SpriteBatch* s
     CreateShader();
     //画像の読み込み
     LoadTexture(L"Resources/Textures/Boms.png");
-    m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(m_commonResources->GetDeviceResources()->GetD3DDeviceContext());
+    m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(m_commonResources->GetDeviceResources()->GetD3DDeviceContext());
 }
 
 //---------------------------------------------------------
@@ -65,19 +68,16 @@ void BomUI::Render(float elapsedTime)
 
 	//時間経過
 	m_time -= elapsedTime;
-	
 	//	頂点情報(板ポリゴンの４頂点の座標情報）
 	DirectX::VertexPositionColorTexture vertex[4] =
 	{
 		DirectX::VertexPositionColorTexture(DirectX::SimpleMath::Vector3(0.0f,  -0.75f, 0.0f),
 		DirectX::SimpleMath::Vector4::One, DirectX::SimpleMath::Vector2(0.0f, 0.0f)),
 	};
-
-	ConstBuffer cbuff;
 	//	シェーダーに渡す追加のバッファを作成する。
-	//残り30秒になったら
-	if (m_time < 30.0f)
-	{
+	ConstBuffer cbuff;
+	//残り30秒以下になったら
+	if (m_time < 30.0f){
 		//大きさの調整
 		m_sin = sin((m_time) + 25) / 10 + 0.1f;
 
@@ -88,9 +88,9 @@ void BomUI::Render(float elapsedTime)
 		cbuff.Diffuse = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
 		cbuff.time = DirectX::SimpleMath::Vector4(m_time, 1, 1, 1);
 	}
+	// それ以上なら
 	else
 	{
-		
 		cbuff.matView = DirectX::SimpleMath::Matrix::Identity;
 		cbuff.matProj = DirectX::SimpleMath::Matrix::Identity;
 		cbuff.matWorld = DirectX::SimpleMath::Matrix::Identity;
@@ -104,44 +104,23 @@ void BomUI::Render(float elapsedTime)
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->GSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);
-
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);
-
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { states->LinearWrap() };
 	context->PSSetSamplers(0, 1, sampler);
-
-	//	半透明描画指定
-	ID3D11BlendState* blendstate = states->NonPremultiplied();
-
-	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
-	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
-	//	カリングは左周り
-	context->RSSetState(states->CullNone());
-
-	//	シェーダをセットする
+	//	各シェーダを設定する
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->GSSetShader(m_geometryShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-
+	// シェイダーの設定
 	context->PSSetShaderResources(0, 1, m_bomTexture.GetAddressOf());
-	
-
 	//	インプットレイアウトの登録
 	context->IASetInputLayout(m_inputLayout.Get());
-
-	//	板ポリゴンを描画	//ボムを描画する
+	//ボムUIを描画する
 	m_batch->Begin();
 	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	m_batch->End();
-
-	
-
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->GSSetShader(nullptr, nullptr, 0);
@@ -158,7 +137,7 @@ void BomUI::Finalize()
 }
 
 //---------------------------------------------------------
-// Shader作成部分だけ分離
+// Shader作成
 //---------------------------------------------------------
 void BomUI::CreateShader()
 {
@@ -175,22 +154,22 @@ void BomUI::CreateShader()
 		VSData.GetData(), VSData.GetSize(),
 		m_inputLayout.GetAddressOf());
 
-	//	頂点シェーダ作成
-	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
-	{//	エラー
+	// 頂点シェーダ作成
+	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf()))){
+		//	エラー
 		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
 		return;
 	}
 
-	//	ジオメトリシェーダ作成
-	if (FAILED(device->CreateGeometryShader(GSData.GetData(), GSData.GetSize(), NULL, m_geometryShader.ReleaseAndGetAddressOf())))
-	{//	エラー
+	// ジオメトリシェーダ作成
+	if (FAILED(device->CreateGeometryShader(GSData.GetData(), GSData.GetSize(), NULL, m_geometryShader.ReleaseAndGetAddressOf()))){
+		//	エラー
 		MessageBox(0, L"CreateGeometryShader Failed.", NULL, MB_OK);
 		return;
 	}
-	//	ピクセルシェーダ作成
-	if (FAILED(device->CreatePixelShader(PSData.GetData(), PSData.GetSize(), NULL, m_pixelShader.ReleaseAndGetAddressOf())))
-	{//	エラー
+	// ピクセルシェーダ作成
+	if (FAILED(device->CreatePixelShader(PSData.GetData(), PSData.GetSize(), NULL, m_pixelShader.ReleaseAndGetAddressOf()))){
+		//	エラー
 		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
 		return;
 	}
@@ -211,5 +190,4 @@ void BomUI::CreateShader()
 void BomUI::LoadTexture(const wchar_t* path)
 {
     DirectX::CreateWICTextureFromFile(m_commonResources->GetDeviceResources()->GetD3DDevice(), path, nullptr, m_bomTexture.ReleaseAndGetAddressOf());
-    
 }

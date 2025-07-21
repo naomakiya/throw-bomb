@@ -191,7 +191,7 @@ void PlayerState::CheckCollisionWithFloor()
 		if (!mylib::Collision::BoundingCheckBoxCollision(m_boundingBox, floor->GetBoundingBox())) continue;
 
 		// 床のY軸を取得
-		float floorTopY = floor->GetPosition().y;
+		float floorTopY = floor->GetBoundingBox().Center.y;
 
 		// プレイヤーが床より下にいる場合のみ接地判定
 		if (m_position.y < floorTopY + 1.50f){

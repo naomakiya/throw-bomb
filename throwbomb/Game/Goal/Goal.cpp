@@ -2,11 +2,13 @@
   @file  Goal.cpp
   @brief ゴールクラス
 */
+
 #include "pch.h"
-#include"Framework/CommonResources.h"
+#include "Framework/CommonResources.h"
 #include "Framework/DeviceResources.h"
-#include"Game/Goal/Goal.h"
+#include "Game/Goal/Goal.h"
 #include <Libraries/Microsoft/ReadData.h>
+#include "Game/ResourceManager/ResourceManager.h"
 
 //---------------------------------------------------------
 // コンストラクタ
@@ -17,7 +19,6 @@ Goal::Goal(DirectX::SimpleMath::Vector3 pos)
 	m_model{},
 	m_boundingSphere{},
 	m_position{ pos },
-	m_scale{0.025f},
 	m_time{0.0f}
 {
 	//バウディングスフィアの設定
@@ -63,7 +64,7 @@ void Goal::Render(ID3D11DeviceContext* context,
 	auto states = m_commonResources->GetCommonStates();
 
 	// ワールド行列を更新する
-	Matrix world = Matrix::CreateScale(m_scale);
+	Matrix world = Matrix::CreateScale(GOALMODELSCALE);
 	world *= Matrix::CreateTranslation(m_position);
 
 	//マップリソースの作成
@@ -117,7 +118,7 @@ void Goal::LoadModel(ID3D11Device* device)
 	std::unique_ptr<DirectX::DX11::EffectFactory> fx = std::make_unique<DirectX::DX11::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
 	//モデルをロードする
-	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/TreasureChest.cmo", *fx);
+	m_model = DirectX::Model::CreateFromCMO(device,ResourceManager::GetModelPath("Goal").c_str(), *fx);
 
 	// トーラスモデルのエフェクトを設定する
 	m_model->UpdateEffects([&](DirectX::DX11::IEffect* effect)

@@ -39,9 +39,9 @@ void StraighteningEnemyState::HPDown()
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
-StraighteningEnemyState::StraighteningEnemyState( const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player)
+StraighteningEnemyState::StraighteningEnemyState( const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player,const DirectX::SimpleMath::Vector3& position)
     :
-    m_position{},
+    m_position{ position },
     m_enemyModel{},
     m_commonResources{},
     m_mass{ 0 },
@@ -71,7 +71,7 @@ StraighteningEnemyState::~StraighteningEnemyState()
 //---------------------------------------------------------
 // 初期化する
 //---------------------------------------------------------
-void StraighteningEnemyState::Initialize(CommonResources* resources,DirectX::SimpleMath::Vector3 pos)
+void StraighteningEnemyState::Initialize(CommonResources* resources)
 {
     assert(resources);
     m_commonResources = resources;
@@ -79,21 +79,20 @@ void StraighteningEnemyState::Initialize(CommonResources* resources,DirectX::Sim
     auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
    
 
-    m_position = pos;
-    m_shadowPosition = pos;
+    m_shadowPosition = m_position;
 
     // 影を作成する
     m_shadow = std::make_unique<Shadow>();
     m_shadow->Initialize(device, context);
 
     m_exist = std::make_unique<StraighteningEnemyExist>(this,m_wall);
-    m_exist->Initialize(m_commonResources,pos);
+    m_exist->Initialize(m_commonResources);
 
     m_search = std::make_unique<StraighteningEnemySearch>(this, m_wall, m_player);
-    m_search->Initialize(m_commonResources,pos);
+    m_search->Initialize(m_commonResources);
 
     m_dash = std::make_unique<StraighteningEnemyDash>(this, m_wall,m_player);
-    m_dash->Initialize(m_commonResources, pos);
+    m_dash->Initialize(m_commonResources);
 
     /* m_stop = std::make_unique<EnemyStop>(this, m_wall);
     m_stop->Initialize(m_commonResources, pos);*/
@@ -177,14 +176,14 @@ void StraighteningEnemyState::PostUpdate()
 // 描画する
 //---------------------------------------------------------
 void StraighteningEnemyState::Render(ID3D11DeviceContext* context,
+    DirectX::CommonStates* states,
     const DirectX::SimpleMath::Matrix& view,
     const DirectX::SimpleMath::Matrix& projection,
     const DirectX::Model& model)
 {
-    auto states = m_commonResources->GetCommonStates();
 
     //各描画
-    m_currentState->Render(context,view, projection,model);
+    m_currentState->Render(context,states,view, projection,model);
 
     //影の位置調整
     m_shadowPosition = m_position;

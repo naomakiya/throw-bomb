@@ -7,11 +7,10 @@
 // 前方宣言
 class CommonResources;
 
-namespace DirectX
-{
+namespace DirectX{
 	class DX11::SpriteBatch;
 }
-// 一般的なシーンクラス
+
 class HartUI
 {
 public:
@@ -25,6 +24,7 @@ public:
 	void Render(const int index);
 	// 後処理
 	void Finalize();
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;

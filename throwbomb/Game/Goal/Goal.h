@@ -6,7 +6,6 @@
 #pragma once
 #ifndef GAOL_DEFINED
 #define GAOL_DEFINED
-#include "GeometricPrimitive.h"
 
 // 前方宣言
 class CommonResources;
@@ -24,7 +23,7 @@ public:
 
 public:
 	// スケールを取得する
-	float GetScale() const { return m_scale; }
+	float GetScale() const { return GOALMODELSCALE; }
 	// 位置を取得する
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// バウンディングボックスを取得する
@@ -53,23 +52,24 @@ private:
 	void CreateConstanBuffer(ID3D11Device* device);
 
 private:
+	static constexpr float  GOALMODELSCALE= 0.025f;
+
+private:
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// ゴールのモデル
 	std::unique_ptr<DirectX::Model> m_model;
-	//ピクセルシェイダー
+	// ピクセルシェイダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ps;
-	//インプットレイヤー
+	// インプットレイヤー
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-	//定数用バッファー
+	// 定数用バッファー
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
 	// バウンディングボックス
 	DirectX::BoundingSphere m_boundingSphere;
 	// 位置
 	DirectX::SimpleMath::Vector3 m_position;
-	// スケール
-	float m_scale;
-	//時間の作成
+	// 時間の作成
 	float m_time;
 };
 #endif		// PLAYER_DEFINED

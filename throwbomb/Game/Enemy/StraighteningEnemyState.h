@@ -19,8 +19,6 @@ class CollisionDebugRenderer;
 class StraighteningEnemyState : public IEnemyState
 {
 public:
-    // スケールを取得する
-    float GetScale() const { return m_scale; }
     // 位置を取得する
     DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
     // 位置を設定する
@@ -56,11 +54,11 @@ public:
     //EnemyStop* GetEnemyStop() const { return m_stop.get(); }
 public:
     // コンストラクタ
-    StraighteningEnemyState(const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player);
+    StraighteningEnemyState(const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player,const DirectX::SimpleMath::Vector3& position);
     // デストラクタ
     ~StraighteningEnemyState();
     // 初期化する
-    void Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos);
+    void Initialize(CommonResources* resources);
     // 新しい状態に遷移する
     void ChangeState(IEnemyState* newState);
     // 事前更新
@@ -71,6 +69,7 @@ public:
     void PostUpdate() ;
     // 描画する
     void Render(ID3D11DeviceContext* context,
+        DirectX::CommonStates* states,
         const DirectX::SimpleMath::Matrix& view,
         const DirectX::SimpleMath::Matrix& projection,
         const DirectX::Model& model) ;

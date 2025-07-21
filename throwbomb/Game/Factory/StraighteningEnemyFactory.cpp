@@ -11,17 +11,15 @@ std::vector<std::unique_ptr<IEnemyState>> StraighteningEnemyFactory::CreateEnemy
 	using namespace DirectX::SimpleMath;
 
 	// 配列を宣言する
-	std::vector<std::unique_ptr<IEnemyState>> enemys;
-
-	for (const auto& maps : map)
-	{
-		DirectX::SimpleMath::Vector3 enemyPos = maps;
-
-		std::unique_ptr<StraighteningEnemyState> enemy = std::make_unique<StraighteningEnemyState>(wall, player);
-		enemy->Initialize(commonResources, enemyPos);
-
-		enemys.push_back(std::move(enemy));
+	std::vector<std::unique_ptr<IEnemyState>> enemies;
+	// 各スポーン座標ごとに敵生成
+	for (const auto& mapPosition : map){
+		// 突進する敵の作成
+		std::unique_ptr<StraighteningEnemyState> enemy = std::make_unique<StraighteningEnemyState>(wall, player, mapPosition);
+		enemy->Initialize(commonResources);
+		// 配列に挿入
+		enemies.push_back(std::move(enemy));
 	}
-	// てき配列を返す
-	return enemys;
+	// 配列を返す
+	return enemies;
 }

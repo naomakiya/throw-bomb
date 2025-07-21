@@ -26,7 +26,6 @@ EnemyPointMovement::EnemyPointMovement(EnemyState* enemyState, const std::vector
 	m_worldMatrix{},
 	m_position{},
     m_wall{wall},
-    m_scale(m_enemy->GetScale()),
     m_exist(m_enemy->GetExist()),
     m_isPaused(),
     m_pauseTimer{},
@@ -49,15 +48,10 @@ EnemyPointMovement::~EnemyPointMovement()
 //---------------------------------------------------------
 // 初期化
 //---------------------------------------------------------
-void EnemyPointMovement::Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos)
+void EnemyPointMovement::Initialize(CommonResources* resources)
 {
 	assert(resources);
 	m_commonResources = resources;
-
-	// バウンディングボックス
-    m_position = pos;
-	m_boundingBox.Center = pos;
-	m_boundingBox.Extents = DirectX::SimpleMath::Vector3(0.5f);
 
 }
 
@@ -68,6 +62,7 @@ void EnemyPointMovement::PreUpdate()
 {
     m_position = m_enemy->GetPosition();
     m_patrolPathPos = m_enemy->GetPointPosition();
+    m_boundingBox = m_enemy->GetBoundingBox();
 }
  
 //---------------------------------------------------------
@@ -102,11 +97,9 @@ void EnemyPointMovement::PostUpdate()
 //---------------------------------------------------------
 // 描画
 //---------------------------------------------------------
-void EnemyPointMovement::Render(ID3D11DeviceContext* context,
+void EnemyPointMovement::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states,
     const DirectX::SimpleMath::Matrix& view,const DirectX::SimpleMath::Matrix& projection, const DirectX::Model& model)
 {
-    auto states = m_commonResources->GetCommonStates();
-
     // ワールド行列を更新する
     DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::CreateScale(m_modelScale);
     world *= DirectX::SimpleMath::Matrix::CreateFromQuaternion(m_rotate);

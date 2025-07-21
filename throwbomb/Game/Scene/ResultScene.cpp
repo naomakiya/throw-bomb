@@ -338,8 +338,8 @@ void ResultScene::TextureRender()
 	m_spriteBatch->Draw(m_clear.Get(), pos, nullptr, {1,1,1,1.0}, 0.0f, Vector2(320, 24), 1 * 1.5);
 
 	
-	Vector2 restartPos(Screen::CENTER_X - 300, Screen::CENTER_Y + 250);
-	Vector2 slectPos(Screen::CENTER_X, Screen::CENTER_Y + 250);
+	Vector2 restartPos(Screen::CENTER_X, Screen::CENTER_Y + 250);
+	Vector2 slectPos(Screen::CENTER_X - 300, Screen::CENTER_Y + 250);
 	Vector2 titlePos(Screen::CENTER_X + 300, Screen::CENTER_Y + 250);
 
 	// ‘I‘ðŽˆ‚Ì•`‰æ

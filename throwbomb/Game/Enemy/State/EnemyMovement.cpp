@@ -25,7 +25,6 @@ EnemyMovement::EnemyMovement(EnemyState* enemyState, const std::vector<std::uniq
 	m_worldMatrix{},
 	m_position{},
     m_wall{wall},
-    m_scale(m_enemy->GetScale()),
     m_exist(m_enemy->GetExist()),
     m_moveSpeed(2.5f),
     m_isHit{false},
@@ -47,17 +46,13 @@ EnemyMovement::~EnemyMovement()
 //---------------------------------------------------------
 // 初期化
 //---------------------------------------------------------
-void EnemyMovement::Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos)
+void EnemyMovement::Initialize(CommonResources* resources)
 {
 	assert(resources);
 	m_commonResources = resources;
 
-	// バウンディングボックス(当たり判定）
-    m_position = pos;
-	m_boundingBox.Center = pos;
-	m_boundingBox.Extents = DirectX::SimpleMath::Vector3(0.5f);
     // バウディングスフィアの作成（探索球）
-    m_boundingSphere.Center = pos;
+    m_boundingSphere.Center = m_position;
     m_boundingSphere.Radius = 2.5f;
 
     // 最初の目標パスを設定する
@@ -70,6 +65,7 @@ void EnemyMovement::Initialize(CommonResources* resources, DirectX::SimpleMath::
 void EnemyMovement::PreUpdate()
 {
     m_position = m_enemy->GetPosition();
+    m_boundingBox = m_enemy->GetBoundingBox();
 }
  
 //---------------------------------------------------------
@@ -107,11 +103,9 @@ void EnemyMovement::PostUpdate()
 //---------------------------------------------------------
 // 描画
 //---------------------------------------------------------
-void EnemyMovement::Render(ID3D11DeviceContext* context,
+void EnemyMovement::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states,
     const DirectX::SimpleMath::Matrix& view,const DirectX::SimpleMath::Matrix& projection, const DirectX::Model& model)
 {
-    auto states = m_commonResources->GetCommonStates();
-
     // ワールド行列を更新する
     DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::CreateScale(m_modelScale);
     world *= DirectX::SimpleMath::Matrix::CreateFromQuaternion(m_rotate);

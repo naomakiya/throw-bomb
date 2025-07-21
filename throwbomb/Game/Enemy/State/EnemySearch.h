@@ -21,7 +21,7 @@ public:
     // デストラクタ
     ~EnemySearch();
     // 初期化
-    void Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos);
+    void Initialize(CommonResources* resources);
     // 前更新
     void PreUpdate();
     //更新
@@ -29,13 +29,13 @@ public:
     //事後更新
     void PostUpdate();
     //描画
-    void Render(ID3D11DeviceContext* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection,
+    void Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
+        const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection,
         const DirectX::Model& model);
     //処理
     void Finalize();
     // 壁との衝突処理
     DirectX::SimpleMath::Vector3 CheckHitAndResolve(const DirectX::BoundingBox& wallBox, const DirectX::BoundingBox& entityBox);
-    float GetScale() const { return m_scale; }
     // 位置を取得する
     DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
     // 位置を設定する

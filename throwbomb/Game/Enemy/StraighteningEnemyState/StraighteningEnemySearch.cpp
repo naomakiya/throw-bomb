@@ -27,11 +27,10 @@
 	m_worldMatrix{},
 	m_EnemyModel{},
 	m_model{},
-	m_position{},
+	m_position{DirectX::SimpleMath::Vector3::Zero},
     m_wall{wall},
 	 m_stoptime{0},
     m_exist(m_enemy->GetExist()),
-    m_scale(m_enemy->GetScale()),
 	m_rotation{ DirectX::SimpleMath::Quaternion::Identity },
 	m_player{player},
 	m_collisionDebugRenderer{},
@@ -44,7 +43,7 @@
 {
 }
 
-void  StraighteningEnemySearch::Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos)
+void  StraighteningEnemySearch::Initialize(CommonResources* resources)
 {
 	assert(resources);
 	m_commonResources = resources;
@@ -52,13 +51,10 @@ void  StraighteningEnemySearch::Initialize(CommonResources* resources, DirectX::
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
-	m_position = pos;
-	m_position.z = pos.z + 0.5f; //ボックスの位置を前に0.5f移動させるする
-
 	m_collisionDebugRenderer = std::make_unique<CollisionDebugRenderer>(device, context);
 	
 	// バウンディングボックスのサイズを設定（幅2.0、高さ2.0、奥行き2.0の立方体）
-	m_searchBoundingBox = DirectX::BoundingOrientedBox(pos, DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.5f), DirectX::SimpleMath::Quaternion::Identity);
+	m_searchBoundingBox = DirectX::BoundingOrientedBox(m_position, DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.5f), DirectX::SimpleMath::Quaternion::Identity);
 }
 
 
@@ -67,6 +63,7 @@ void  StraighteningEnemySearch::PreUpdate()
 	m_position = m_enemy->GetPosition();
 	m_boundingBox = m_enemy->GetBoundingBox();
 	m_boundingBox.Center = m_position;
+	m_searchBoundingBox.Center = m_enemy->GetPosition();
 }
 
 void  StraighteningEnemySearch::Update(const float& elapsedTime)
@@ -102,11 +99,9 @@ void  StraighteningEnemySearch::PostUpdate()
     m_enemy->SetPosition(m_position);
 }
 
-void  StraighteningEnemySearch::Render(ID3D11DeviceContext* context,
+void  StraighteningEnemySearch::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states,
 	const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection, const DirectX::Model& model)
 {
-	auto states = m_commonResources->GetCommonStates();
-
 	// 回転をクォータニオンからマトリクスへ変換
 	DirectX::SimpleMath::Matrix rotationMatrix = DirectX::SimpleMath::Matrix::CreateFromQuaternion(m_rotation);
 

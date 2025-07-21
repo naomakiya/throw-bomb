@@ -16,9 +16,6 @@
 #include <Framework/LoadJson.h>
 #include <Game/ResourceManager/ResourceManager.h>
 
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
-
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
@@ -60,13 +57,12 @@ void BomExplosion::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
 	// モデルを読み込む準備
 	std::unique_ptr<DirectX::DX11::EffectFactory> fx = std::make_unique<DirectX::DX11::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models/exprol");
 	// 爆発球の作成
-	m_explosionSphere = DirectX::Model::CreateFromCMO(device, L"Resources/Models/exprol/exprol.cmo", *fx);
+	m_explosionSphere = DirectX::Model::CreateFromCMO(device, ResourceManager::GetModelPath("Exprol").c_str(), *fx);
 
 	// 爆発球のエフェクトを設定する
 	m_explosionSphere->UpdateEffects([&](DirectX::DX11::IEffect* effect){
@@ -84,18 +80,8 @@ void BomExplosion::Initialize(CommonResources* resources)
 	ShaderLoad(device);
 	//定数バッファーの作成
 	CreateConstanBuffer(device);
-
-	m_dithering = std::make_unique<Dithering>(device);
-
-	m_smork = std::make_unique<Smork>();
-	m_smork->Create(m_commonResources->GetDeviceResources());
-
-	m_explosionObjects = {
-	{ Vector3(0, 0, 0), 1.0f, 0.0f, 0.8f, true },
-	};
-
-	// SpriteBatch 初期化
-	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
+	// クラス作成
+	ClassCreate();
 
 	// テクスチャー読み込み
 	DX::ThrowIfFailed(
@@ -119,11 +105,17 @@ void BomExplosion::Initialize(CommonResources* resources)
 //事前準備
 void BomExplosion::PreUpdate()
 {
+	// 位置情報の更新
 	m_position = m_bomState->GetPosition();
+	// バウディングスフィアの更新
 	m_boundingSphere.Center = m_position;
+	// カウント
 	m_cnt = 2.0f;
+	// 初期スケール
 	m_scale = 0.25f;
+	// 時間経過
 	m_elapsedTime = 0.0f;
+	// 煙のセット
 	m_smork->SetOn(true);
 	// 現在の状態を移動にする
 	m_bomState->SetBomPresent(BomState::BomtPresent::EXPLOSION);
@@ -138,6 +130,7 @@ void BomExplosion::PreUpdate()
 //---------------------------------------------------------
 void BomExplosion::Update(const float& elapsedTime)
 {
+	// 時間経過
 	m_elapsedTime += elapsedTime;
 	//カウントダウン
 	m_cnt -= elapsedTime;
@@ -146,46 +139,17 @@ void BomExplosion::Update(const float& elapsedTime)
 	//  パーティクルの更新
 	m_smork->Update(elapsedTime, m_position, m_scale);
 	//時間経過で膨張速度を制御
-	m_scale += 2.0f * elapsedTime;
-	if (m_scale > 10.0){
-		m_scale = 10.0f;
+	m_scale +=  m_elapsedTime;
+	if (m_scale > 2.5){
+		m_scale = 2.5f;
 	}
 	//　大きさを変更する
 	m_boundingSphere.Radius = m_scale;
-
+	// 当たり判定の大きさの設定
 	m_bomState->SetBoundingSphere(m_boundingSphere);
 
-	float lastExplosionEnd = 0.0f;
-
-	for (const auto& obj : m_explosionObjects){
-		float endTime = obj.startTime + obj.duration;
-
-		if (endTime > lastExplosionEnd){
-			lastExplosionEnd = endTime;
-		}
-	}
-
-	float totalElapsedTime = m_elapsedTime; // 例えばボム開始からの累積時間
-
-	for (auto& obj : m_explosionObjects)
-	{
-		// 表示開始前
-		if (totalElapsedTime < obj.startTime){
-			obj.active = false;
-			continue;
-		}
-
-		// 表示終了後
-		if (totalElapsedTime > obj.startTime + obj.duration) {
-			obj.active = false;
-			continue;
-		}
-
-		// 表示中
-		obj.active = true;
-	}
-
-	if (m_elapsedTime >= lastExplosionEnd){
+	// 時間経過後状態を生存状態に変更
+	if (m_elapsedTime >= 2.0f){
 		m_bomState->ChangeState(m_bomState->GetBomExist());
 	}
 
@@ -194,8 +158,9 @@ void BomExplosion::Update(const float& elapsedTime)
 
 void BomExplosion::PostUpdate()
 {
-	m_bomState->SetBomPresent(EXPLOSION);
+	// 状態を生存にする
 	m_bomState->SetBomPresent(Exist);
+	// 無い状態にする
 	m_bomState->SetExist(false);
 }
 
@@ -204,28 +169,21 @@ void BomExplosion::PostUpdate()
 //---------------------------------------------------------
 void BomExplosion::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
+	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 
 
 	// 深度ステンシルステート設定
 	context->OMSetDepthStencilState(m_depthStencilState.Get(), 0);
-
-	for (const auto& obj : m_explosionObjects)
-	{
-		if (!obj.active) continue;
-
-		Vector3 drawPos = m_position + obj.offset;
-		float drawScale = m_scale * obj.scaleMultiplier;
-
-		Matrix worldExp = Matrix::CreateScale(Vector3(drawScale * 0.01f)) *
+	// 行列計算
+	Matrix worldExp = Matrix::CreateScale(Vector3(m_scale * 0.01f)) *
 			Matrix::CreateRotationY(m_elapsedTime * 0.5f) *
-			Matrix::CreateTranslation(drawPos);
+			Matrix::CreateTranslation(m_position);
+	// モデルの描画
+	m_dithering->RenderObjects(context, states, projection, view, m_position, worldExp, m_position, m_explosionSphere.get());
 
-		m_dithering->RenderObjects(context, states, projection, view, drawPos, worldExp, drawPos, m_explosionSphere.get());
-	}
-
-	// === 敵の「頭上」1mの座標をまず計算 ===
+	// 座標をまず計算 
 	DirectX::SimpleMath::Vector3 headPosition = m_position + DirectX::SimpleMath::Vector3(0, 1.0f, 0);
 
 	// === 3D → 2Dスクリーン座標変換 ===
@@ -253,22 +211,34 @@ void BomExplosion::Finalize()
 }
 
 //---------------------------------------------------------
+// クラス作成
+//---------------------------------------------------------
+void BomExplosion::ClassCreate()
+{
+	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// ディザリングの生成
+	m_dithering = std::make_unique<Dithering>(device);
+	// 煙の生成
+	m_smork = std::make_unique<Smork>();
+	m_smork->Create(m_commonResources->GetDeviceResources());
+	// SpriteBatch 初期化
+	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
+}
+
+//---------------------------------------------------------
 //壁の破壊をするかしないかの確認
 //---------------------------------------------------------
 void BomExplosion::CheckBreak()
 {
 
-	for (const auto& wall : m_wall)
-	{
+	for (const auto& wall : m_wall){
 		// バウンディングスフィアと壁のAABBが衝突しているかをチェック
 		bool isHitWall = m_boundingSphere.Intersects(wall->GetBoundingBox());
-
-		if (isHitWall)
-		{
+		if (isHitWall){
 			Wall::WallType m_type = wall->GetWallType();
-
-			if (m_type == Wall::WallType::Destructible && wall->IsVisible() == false)
-			{
+			// ひび割れの状態の壁なら破壊する
+			if (m_type == Wall::WallType::Destructible && wall->IsVisible() == false){
 				wall->SetVisible(true); // 非表示にする
 				wall->SetExist(false);
 			}

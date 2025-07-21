@@ -45,20 +45,14 @@ EnemySearch::~EnemySearch()
 //---------------------------------------------------------
 // 初期化
 //---------------------------------------------------------
-void EnemySearch::Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos)
+void EnemySearch::Initialize(CommonResources* resources)
 {
     m_commonResources = resources;
-    m_position = pos;
 
     auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
     auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 
-    m_boundingBox.Center = m_position;
-    m_boundingBox.Center.y += 0.5f;
-    m_boundingBox.Extents = DirectX::SimpleMath::Vector3(m_scale);
-
-    // SpriteBatch 初期化
-    
+    // SpriteBatch 初期化    
     m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 
     // テクスチャー読み込み
@@ -71,7 +65,7 @@ void EnemySearch::Initialize(CommonResources* resources, DirectX::SimpleMath::Ve
         )
     );
     // バウンディングボックスのサイズを設定（幅2.0、高さ2.0、奥行き2.0の立方体）
-    m_searchBoundingBox = DirectX::BoundingOrientedBox(pos, DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.5f), DirectX::SimpleMath::Quaternion::Identity);
+    m_searchBoundingBox = DirectX::BoundingOrientedBox(m_position, DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.5f), DirectX::SimpleMath::Quaternion::Identity);
 }
 
 //---------------------------------------------------------
@@ -84,6 +78,7 @@ void EnemySearch::PreUpdate()
     m_textureAngle = 0.0f;
     m_totalTime = 0.0f;
     m_boundingBox = m_enemy->GetBoundingBox();
+    m_searchBoundingBox.Center = m_enemy->GetPosition();
 }
 
 //---------------------------------------------------------
@@ -146,10 +141,10 @@ void EnemySearch::PostUpdate()
 //---------------------------------------------------------
 // 描画
 //---------------------------------------------------------
-void EnemySearch::Render(ID3D11DeviceContext* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection,
+void EnemySearch::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
+    const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection,
     const DirectX::Model& model)
 {
-    auto states = m_commonResources->GetCommonStates();
     // ワールド行列を更新する
     DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::CreateScale(m_modelScale);
     world *= DirectX::SimpleMath::Matrix::CreateFromQuaternion(m_rotate);

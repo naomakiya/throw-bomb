@@ -52,7 +52,6 @@ void Dithering::LoadShader(ID3D11Device* device)
     DX::ThrowIfFailed(
         device->CreateVertexShader(blob.data(), blob.size(), nullptr, m_vs.ReleaseAndGetAddressOf())
     );
-
     // ディザリング用のピクセルシェーダをロードする
     blob = DX::ReadData(L"Resources/Shaders/PS_Dithering.cso");
     DX::ThrowIfFailed(

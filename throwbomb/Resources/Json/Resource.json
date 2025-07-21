@@ -12,7 +12,9 @@
         "Bom"       : "Resources/Models/Bom.cmo",
         "Exprol"    : "Resources/Models/exprol/exprol.cmo",
         "stairs1"   : "Resources/Models/stairs2.cmo",
-        "stairs2"   : "Resources/Models/stairs3.cmo"
+        "stairs2"   : "Resources/Models/stairs3.cmo",
+        "Goal"      : "Resources/Models/TreasureChest.cmo",
+        "Vase"      : "Resources/Models/vase.cmo"
 
     },
     "Texture": {
@@ -39,6 +41,8 @@
         "Slash"          : "Resources/Textures/slash.png",
         "RemainingEnemy" : "Resources/Textures/RemainingEnemy.png",
         "Score"          : "Resources/Textures/Score.png",
+        "Hart"           : "Resources/Textures/hart.png",
+        "HartEmpty"      : "Resources/Textures/hartEmpty.png",
         "1"              : "Resources/Textures/1.png",
         "2"              : "Resources/Textures/2.png",
         "3"              : "Resources/Textures/3.png",

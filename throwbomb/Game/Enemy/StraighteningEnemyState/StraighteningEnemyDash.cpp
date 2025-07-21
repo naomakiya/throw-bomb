@@ -31,7 +31,6 @@ StraighteningEnemyDash::StraighteningEnemyDash(StraighteningEnemyState* enemySta
     m_dashTime{0.0f},
     m_isHit{true},
     m_exist(m_enemy->GetExist()),
-    m_scale(m_enemy->GetScale()),
     m_player{player},
     m_boundingBox{},
     m_direction{}
@@ -49,7 +48,7 @@ StraighteningEnemyDash::~StraighteningEnemyDash()
 //---------------------------------------------------------
 // 初期化
 //---------------------------------------------------------
-void StraighteningEnemyDash::Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos)
+void StraighteningEnemyDash::Initialize(CommonResources* resources)
 {
    
 	assert(resources);
@@ -57,10 +56,6 @@ void StraighteningEnemyDash::Initialize(CommonResources* resources, DirectX::Sim
 
     auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
     auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
-    m_position = pos;
-
-    m_boundingBox = m_enemy->GetBoundingBox();
 
     // SpriteBatch 初期化
     m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
@@ -128,12 +123,10 @@ void StraighteningEnemyDash::PostUpdate()
 //---------------------------------------------------------
 // 描画
 //---------------------------------------------------------
-void StraighteningEnemyDash::Render(ID3D11DeviceContext* context,
+void StraighteningEnemyDash::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states,
     const DirectX::SimpleMath::Matrix& view,const DirectX::SimpleMath::Matrix& projection, const DirectX::Model& model)
 {
     using namespace DirectX::SimpleMath;
-
-    auto states = m_commonResources->GetCommonStates();
 
     // ワールド行列を更新する
     DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::CreateScale(0.006f);

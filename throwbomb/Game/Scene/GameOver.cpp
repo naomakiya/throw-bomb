@@ -257,17 +257,17 @@ void GameOver::Render()
 	Vector2 restartPos(Screen::CENTER_X, Screen::CENTER_Y + 250);
 	Vector2 titlePos(Screen::CENTER_X + 300, Screen::CENTER_Y + 250);
 
-	// ‘I‘ðŽˆ‚Ì•`‰æ
+	// ƒŠƒgƒ‰ƒC‚Ì•`‰æ
 	m_spriteBatch->Draw(m_reStart.Get(), restartPos, nullptr, Colors::White, 0.0f,
 		Vector2(140, 105), 1);
-	// ‘I‘ðŽˆ‚Ì•`‰æ
+	// ‘I‘ð‚Ì•`‰æ
 	m_spriteBatch->Draw(m_select.Get(), slectPos, nullptr, Colors::White, 0.0f,
 		Vector2(140, 105), 1);
 
-	// ƒGƒ“ƒh‘I‘ðŽˆ‚Ì•`‰æ
+	// ƒ^ƒCƒgƒ‹‚Ö‚Ì•`‰æ
 	m_spriteBatch->Draw(m_title.Get(), titlePos, nullptr, Colors::White, 0.0f,
 		Vector2(140, 105), 1);
-	// ‘I‘ðŽˆ‚Ì•`‰æ
+	// ƒZƒŒƒNƒgBOX‚Ì•`‰æ
 	m_spriteBatch->Draw(m_selectBox.Get(), m_slectPos, nullptr, Colors::Black , 0.0f,
 		Vector2(100.0f, 50.0f), m_scale);
 

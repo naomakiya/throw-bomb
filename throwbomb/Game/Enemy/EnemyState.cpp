@@ -49,9 +49,9 @@ void EnemyState::SetPointPosition(DirectX::SimpleMath::Vector3& position)
 //---------------------------------------------------------
 // ÉRÉìÉXÉgÉâÉNÉ^
 //---------------------------------------------------------
-EnemyState::EnemyState( const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player, const std::vector<DirectX::SimpleMath::Vector3> patrolPath)
+EnemyState::EnemyState( const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player, const std::vector<DirectX::SimpleMath::Vector3>& patrolPath, const DirectX::SimpleMath::Vector3& position)
     :
-    m_position{},
+    m_position{ position },
     m_enemyModel{},
     m_commonResources{},
     m_angle{ 0 },
@@ -82,41 +82,41 @@ EnemyState::~EnemyState()
 //---------------------------------------------------------
 // èâä˙âªÇ∑ÇÈ
 //---------------------------------------------------------
-void EnemyState::Initialize(CommonResources* resources,DirectX::SimpleMath::Vector3 pos)
+void EnemyState::Initialize(CommonResources* resources)
 {
     assert(resources);
     m_commonResources = resources;
 
     auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
     auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+    //íÜêSÇÃà⁄ìÆ
+    m_position.y += 0.5f;
 
-    m_position = pos;
-    m_position.y += 1.0f;
+    m_boudingSphere.Center = m_position;
+    m_boudingSphere.Radius = 0.25f;
+
     // âeÇçÏê¨Ç∑ÇÈ
     m_shadow = std::make_unique<Shadow>();
     m_shadow->Initialize(device, context);
 
-    m_exist = std::make_unique<EnemyExist>(this,m_wall);
-    m_exist->Initialize(m_commonResources,pos);
+    m_exist = std::make_unique<EnemyExist>(this);
+    m_exist->Initialize(m_commonResources);
 
     m_movement = std::make_unique<EnemyMovement>(this, m_wall, m_patrolPath);
-    m_movement->Initialize(m_commonResources,pos);
+    m_movement->Initialize(m_commonResources);
 
     m_pointMovement = std::make_unique<EnemyPointMovement>(this, m_wall);
-    m_pointMovement->Initialize(m_commonResources, pos);
+    m_pointMovement->Initialize(m_commonResources);
 
     m_tracking = std::make_unique<EnemyTracking>(this, m_wall,m_player);
-    m_tracking->Initialize(m_commonResources, pos);
+    m_tracking->Initialize(m_commonResources);
 
     m_stop = std::make_unique<EnemyStop>(this, m_wall);
-    m_stop->Initialize(m_commonResources, pos);
+    m_stop->Initialize(m_commonResources);
 
     m_search = std::make_unique<EnemySearch>(this, m_wall, m_player);
-    m_search->Initialize(m_commonResources, pos);
-
-    m_boudingSphere.Center = m_position;
-    m_boudingSphere.Radius = 0.5;
-
+    m_search->Initialize(m_commonResources);
+    
     m_collisionDebugRenderer = std::make_unique<CollisionDebugRenderer>(device,context);
 
     m_currentState = m_exist.get();
@@ -179,14 +179,13 @@ void EnemyState::PostUpdate()
 // ï`âÊÇ∑ÇÈ
 //---------------------------------------------------------
 void EnemyState::Render(ID3D11DeviceContext* context,
+    DirectX::CommonStates* states,
     const DirectX::SimpleMath::Matrix& view,
     const DirectX::SimpleMath::Matrix& projection,
     const DirectX::Model& model)
 {
-    auto states = m_commonResources->GetCommonStates();
-
     // åªç›ÇÃèÛë‘Çï`âÊÇ∑ÇÈ
-    m_currentState->Render(context,view, projection,model);
+    m_currentState->Render(context,states,view, projection,model);
     // é©ã@ÇÃâeÇï`âÊÇ∑ÇÈ
     m_shadow->Render(context, states, view, projection, m_position);
 

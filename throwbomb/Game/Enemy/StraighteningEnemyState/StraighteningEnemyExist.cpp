@@ -32,7 +32,6 @@ StraighteningEnemyExist::StraighteningEnemyExist(StraighteningEnemyState* enemyS
     m_time{0.0f},
     m_isHit{true},
     m_exist(m_enemy->GetExist()),
-    m_scale(m_enemy->GetScale()),
 	m_star{}
 {
 
@@ -42,16 +41,11 @@ StraighteningEnemyExist::~StraighteningEnemyExist()
 {
 }
 
-void StraighteningEnemyExist::Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos)
+void StraighteningEnemyExist::Initialize(CommonResources* resources)
 {
    
 	assert(resources);
 	m_commonResources = resources;
-
-	// バウンディングボックス
-    m_position = pos;
-	m_boundingBox.Center = pos;
-	m_boundingBox.Extents = DirectX::SimpleMath::Vector3(0.5f);
 
 	m_star = std::make_unique<Star>();
 	m_star->Create(m_commonResources->GetDeviceResources());
@@ -63,6 +57,7 @@ void StraighteningEnemyExist::PreUpdate()
 {
 	m_position = m_enemy->GetPosition();
 	m_star->SetOn(true);
+	m_boundingBox = m_enemy->GetBoundingBox();
 }
 
 void StraighteningEnemyExist::Update(const float& elapsedTime)
@@ -84,11 +79,9 @@ void StraighteningEnemyExist::PostUpdate()
    
 }
 
-void StraighteningEnemyExist::Render(ID3D11DeviceContext* context,
+void StraighteningEnemyExist::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states,
     const DirectX::SimpleMath::Matrix& view,const DirectX::SimpleMath::Matrix& projection, const DirectX::Model& model)
 {
-    auto states = m_commonResources->GetCommonStates();
-
     // ワールド行列を更新する
     DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::CreateScale(0.006f);
     world *= DirectX::SimpleMath::Matrix::CreateTranslation(m_position);

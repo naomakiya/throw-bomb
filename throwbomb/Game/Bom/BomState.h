@@ -19,7 +19,6 @@ class PlayerState;
 
 class BomState : public IBomState
 {
-
 public:
 	// d—Í
 	static constexpr float GRAVITY = -9.81f;
@@ -27,6 +26,7 @@ public:
 	static constexpr float BOMBMODELSIZE = 0.005f;
 	// “–‚½‚è”»’è‚Ì‘å‚«‚³
 	static constexpr float BOUNDINGSPHERERADIUS = 0.5f;
+
 public:
     // Šp“x‚ğæ“¾‚·‚é
     float GetAngle() const { return m_currentAngle; }

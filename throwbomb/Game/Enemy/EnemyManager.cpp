@@ -119,17 +119,16 @@ void EnemyManager::Render(ID3D11DeviceContext* context,
     const DirectX::SimpleMath::Matrix& view,
     const DirectX::SimpleMath::Matrix& projection)
 {
+    auto states = m_commonResources->GetCommonStates();
     //追跡エネミー
-    for (auto& enemy : m_enemy)
-    {
+    for (auto& enemy : m_enemy){
         //敵が生きているか生きていない確認
-        if (enemy->GetExist())enemy->Render(context, view, projection, *m_enemyModel);
+        if (enemy->GetExist())enemy->Render(context, states,view, projection, *m_enemyModel);
     }
     //　突進する敵
-    for (auto& straighteningEnemy : m_straighteningEnemy)
-    {
+    for (auto& straighteningEnemy : m_straighteningEnemy){
         //生きているなら
-        if (straighteningEnemy->GetExist()) straighteningEnemy->Render(context, view, projection, *m_enemydashuModel);
+        if (straighteningEnemy->GetExist()) straighteningEnemy->Render(context, states,view, projection, *m_enemydashuModel);
     }
 }
 

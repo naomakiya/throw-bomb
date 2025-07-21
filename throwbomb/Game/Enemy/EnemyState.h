@@ -14,18 +14,17 @@ class PlayerState;
 class EnemyExist;
 class EnemyMovement;
 class EnemySearch;
-class CollisionDebugRenderer;
 class EnemyTracking;
 class EnemyStop;
+class EnemyPointMovement;
+class CollisionDebugRenderer;
 class Shadow;
 class Wall;
-class EnemyPointMovement;
+
 
 class EnemyState : public IEnemyState
 {
 public: //interface側での作成
-    // スケールを取得する
-    float GetScale() const { return m_scale; }
     // 位置を取得する
     DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
     // 位置を設定する
@@ -42,6 +41,8 @@ public: //interface側での作成
     DirectX::BoundingBox GetBoundingBox() const { return m_boundingBox; }
     // 現在の向いている方向を取得する
     DirectX::SimpleMath::Vector3 GetForwardDirection() const { return DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_rotate); }
+public:
+    static constexpr float ENEMYMODELSCALE = 0.006f;
 public: //このクラスでの作成
     // バウンディングボックスを設定する
     void SetBoundingBox(const DirectX::BoundingBox box)  { m_boundingBox = box; }
@@ -49,27 +50,26 @@ public: //このクラスでの作成
     DirectX::BoundingSphere GetBoundingSphere() const { return m_boudingSphere; }
     // バウンディングスフィアを設定する
     void SetBoundingSphere(const DirectX::BoundingSphere sphere) { m_boudingSphere = sphere; }
-    //// モデルを取得する
-    DirectX::Model* GetModel()  { return m_enemyModel.get(); }
     // プレイヤーステートを取得する
-    PlayerState* GetPlayer() { return m_player; }
+    PlayerState* GetPlayer() const { return m_player; }
     // 敵アイドリングを取得する
     EnemyExist* GetEnemyExist() const { return m_exist.get(); }
     // 敵ストライクフォワーディングを取得する
     EnemyMovement* GetEnemyMovement() const { return m_movement.get(); }
-    //敵の追跡モードを取得する
+    // 敵の追跡モードを取得する
     EnemyTracking* GetEnemyTracking() const {return m_tracking.get();}
-    //敵の止まるを取得する
+    // 敵の止まるを取得する
     EnemyStop* GetEnemyStop() const { return m_stop.get(); }
     // プレイヤを探す
     EnemySearch* GetEnemySearch() const { return m_search.get();}
+
 public:
     // コンストラクタ
-    EnemyState(const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player, const std::vector<DirectX::SimpleMath::Vector3> patrolPath);
+    EnemyState(const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player, const std::vector<DirectX::SimpleMath::Vector3>& patrolPath,const DirectX::SimpleMath::Vector3& position);
     // デストラクタ
     ~EnemyState();
     // 初期化する
-    void Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos);
+    void Initialize(CommonResources* resources);
     // 新しい状態に遷移する
     void ChangeState(IEnemyState* newState);
     // 事前更新
@@ -80,6 +80,7 @@ public:
     void PostUpdate() ;
     // 描画する
     void Render(ID3D11DeviceContext* context,
+        DirectX::CommonStates* states,
         const DirectX::SimpleMath::Matrix& view,
         const DirectX::SimpleMath::Matrix& projection,
         const DirectX::Model& model) ;
@@ -87,16 +88,17 @@ public:
     void Finalize() ;
     //エイチピーを減らす
     void HPDown();
+
 private:
-    //プレイヤー
-    PlayerState* m_player;
     // 共通リソース
     CommonResources* m_commonResources;
+    // プレイヤー
+    PlayerState* m_player;
     // デバックコリジョン
     std::unique_ptr<CollisionDebugRenderer> m_collisionDebugRenderer;
-    //状態
+    // 状態
     IEnemyState* m_currentState;
-    //壁
+    // 壁
     const std::vector<std::unique_ptr<Wall>>& m_wall;
     // Enemyのモデル
     std::unique_ptr<DirectX::Model> m_enemyModel;
@@ -104,7 +106,7 @@ private:
     DirectX::BoundingBox m_boundingBox;
     //バウディングスフィア
     DirectX::BoundingSphere m_boudingSphere;
-    //敵の経路パス
+    // 敵の経路パス
     std::vector<DirectX::SimpleMath::Vector3> m_patrolPath;
     // 影オブジェクト
     std::unique_ptr<Shadow> m_shadow;

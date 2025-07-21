@@ -15,8 +15,6 @@ class CollisionDebugRenderer;
 
 class StraighteningEnemySearch :public IEnemyState
 {
-    // スケールを取得する
-    float GetScale() const { return m_scale; }
     // 位置を取得する
     DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
     // 位置を設定する
@@ -40,7 +38,7 @@ public:
      // デストラクタ
      ~StraighteningEnemySearch();
      // 初期化する
-     void Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos);
+     void Initialize(CommonResources* resources);
      // 事前更新する
      void PreUpdate();
      // 更新する
@@ -49,6 +47,7 @@ public:
      void PostUpdate();
      // 描画する
      void Render(ID3D11DeviceContext* context,
+         DirectX::CommonStates* states,
          const DirectX::SimpleMath::Matrix& view,
          const DirectX::SimpleMath::Matrix& projection,
          const DirectX::Model& model);
@@ -85,8 +84,6 @@ public:
     DirectX::SimpleMath::Quaternion m_rotate;
     //クォータオン
     DirectX::SimpleMath::Quaternion m_rotation;
-    // スケール
-    float m_scale;
     //生存
     bool m_exist;
     //止まる時間

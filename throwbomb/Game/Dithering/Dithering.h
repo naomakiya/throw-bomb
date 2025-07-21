@@ -14,6 +14,18 @@ namespace DX
 
 class Dithering
 {
+public:
+    // コンストラクタ
+    Dithering(ID3D11Device1* device);
+    // デストラクタ
+    ~Dithering();
+    // オブジェクトを描画するメソッド
+    void RenderObjects(ID3D11DeviceContext* context, DirectX::DX11::CommonStates* states, DirectX::SimpleMath::Matrix projection, DirectX::SimpleMath::Matrix view,
+        DirectX::SimpleMath::Vector3 eye,
+        DirectX::SimpleMath::Matrix worlds,
+        DirectX::SimpleMath::Vector3 position,
+        DirectX::Model* model);
+
 private:
     // オブジェクト情報を保持する構造体
     struct ObjectInfo
@@ -30,18 +42,6 @@ private:
         DirectX::XMMATRIX viewMatrix;			// ビュー行列
         DirectX::XMVECTOR cameraPosition;		// カメラ座標
     };
-
-public:
-    // コンストラクタ
-    Dithering(ID3D11Device1* device);
-    // デストラクタ
-    ~Dithering();
-    // オブジェクトを描画するメソッド
-    void RenderObjects(ID3D11DeviceContext* context, DirectX::DX11::CommonStates* states, DirectX::SimpleMath::Matrix projection, DirectX::SimpleMath::Matrix view,
-        DirectX::SimpleMath::Vector3 eye,
-        DirectX::SimpleMath::Matrix worlds,
-        DirectX::SimpleMath::Vector3 position,
-        DirectX::Model* model);
 
 private:
     // シェーダをロードする

@@ -6,9 +6,9 @@
 #include "pch.h"
 #include "Framework/CommonResources.h"
 #include "Framework/DeviceResources.h"
+#include "Game/ResourceManager/ResourceManager.h"
 #include "Libraries/MyLib/CollisionDebugRenderer.h"
 #include "Libraries/MyLib/DebugString.h"
-#include "Game/ResourceManager/ResourceManager.h"
 #include "Game/Bom/BomState.h"
 #include "Game/Bom/State/BomMovement.h"
 #include "Game/Player/PlayerState.h"
@@ -94,11 +94,9 @@ void BomMovement::Projection(const DirectX::SimpleMath::Vector3& playerForwardDi
 	float angleDeg = m_bomState->GetAngle();                    
 	// ラジアンに変換
 	float angleRad = DirectX::XMConvertToRadians(angleDeg);
-
-	// 初速度ベクトルの計算（水平方向と垂直方向の成分）
+	// 初速度ベクトルの計算
 	float vx = LAUNCHSPEED * std::cos(angleRad);           // 水平方向の速度成分
 	float vy = LAUNCHSPEED * std::sin(angleRad);           // 垂直方向の速度成分
-
 	// 初速度ベクトルの設定
 	m_velocity = playerForwardDirection * vx + DirectX::SimpleMath::Vector3(0.0f, vy, 0.0f);
 }
@@ -111,14 +109,12 @@ void BomMovement::Update(const float& elapsedTime)
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// バウディングスフィアの設定
 	m_bomState->SetBoundingSphere(m_boundingSphere);
-
 	// 当たり判定の位置の更新
 	m_boundingSphere.Center = m_position;
 	// 一定速度の上書き
 	m_velocity = m_bomState->GetVelocity();
 	// 重力の更新
 	m_velocity += m_gravity * elapsedTime;
-	
 	// 地面に着地した場合、Y方向の速度を反転させる
 	if (m_position.y < GROUNDHEIGHT){
 		// バウンス状態にする
@@ -133,18 +129,14 @@ void BomMovement::Update(const float& elapsedTime)
 	}
 	//壁との当たり判定
 	for (const auto& wall : m_wall){
-
 		HitCheck(wall->GetBoundingBox(),wall->GetExist());
 	}
-
 	// 位置の更新
 	m_position += m_velocity * elapsedTime;
-
 	//0より下にいかないように
 	if (m_position.y < MINHEIGHT){
 		m_position.y = MINHEIGHT;
 	}
-
 	//時間が来たら爆発させる
 	if (m_bomState->GetExplosionTimer() < 0.0f){
 		// 爆発状態に移行
@@ -229,32 +221,27 @@ void BomMovement::HitCheck(DirectX::BoundingBox boundingBox, const bool IsWall)
 	bool isHitWall = m_boundingSphere.Intersects(boundingBox);
 	// していないなら飛ばす
 	if (!isHitWall || !IsWall ) { return; }
-
 	// 衝突時の速度ベクトルを計算する
 	Vector3 bMin = boundingBox.Center - boundingBox.Extents;
 	Vector3 bMax = boundingBox.Center + boundingBox.Extents;
-
+	// 押し返しの数値を入れるための物
 	Vector3 normal = Vector3::Zero;
-
-	if (m_position.x < bMin.x || m_position.x > bMax.x) // X方向の衝突
-	{
+	// X方向の衝突
+	if (m_position.x < bMin.x || m_position.x > bMax.x) {
 		normal.x = (m_position.x < bMin.x) ? 1.0f : -1.0f;
 	}
-	else if (m_position.y < bMin.y || m_position.y > bMax.y) // Y方向の衝突
-	{
+	// Y方向の衝突
+	else if (m_position.y < bMin.y || m_position.y > bMax.y){
 		normal.y = (m_position.y < bMin.y) ? 1.0f : -1.0f;
 	}
-	else if (m_position.z < bMin.z || m_position.z > bMax.z) // Z方向の衝突
-	{
+	// Z方向の衝突
+	else if (m_position.z < bMin.z || m_position.z > bMax.z){
 		normal.z = (m_position.z < bMin.z) ? 1.0f : -1.0f;
 	}
-
 	// 反射ベクトルを計算する(強く反射させるために２倍）
 	Vector3 reflection = m_velocity - 2.0f * (m_velocity.Dot(normal)) * normal;
-
 	// 反射ベクトルを設定する
 	m_velocity = reflection * BOUNCEFACTOR;
-
 	// 衝突後の位置調整（位置を少し押し戻す）
 	m_position -= normal * 0.01f; // これしないとめっちゃ不審な動きする
 

@@ -1,6 +1,6 @@
 /*
   @file  BomStay.h
-  @brief ボムの真下に置くクラス
+  @brief ボムを真下に置くクラス
 */
 #pragma once
 #ifndef BOM_STAY_DEFINED

@@ -24,8 +24,6 @@ public:
         DirectX::SimpleMath::Vector4 time;
     };
 public:
-    // スケールを取得する
-    float GetScale() const { return m_scale; }
     // 位置を取得する
     DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
     // 位置を設定する
@@ -47,7 +45,7 @@ public:
      // デストラクタ
      ~StraighteningEnemyDash();
      // 初期化する
-     void Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos);
+     void Initialize(CommonResources* resources);
      // 事前更新する
      void PreUpdate();
      // 更新する
@@ -57,6 +55,7 @@ public:
      void PostUpdate();
      // 描画する
      void Render(ID3D11DeviceContext* context,
+         DirectX::CommonStates* states,
          const DirectX::SimpleMath::Matrix& view,
          const DirectX::SimpleMath::Matrix& projection,
          const DirectX::Model& model);
@@ -100,8 +99,6 @@ private:
     std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
     //向く方向
     DirectX::SimpleMath::Vector3 m_direction;
-    // スケール
-    float m_scale;
     //ダッシュするまでの時間
     float m_dashTime;
     //生存

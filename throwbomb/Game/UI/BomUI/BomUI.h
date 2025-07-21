@@ -37,11 +37,13 @@ public:
 	void Render(float elapsedTime);
 	// 後処理
 	void Finalize();
+
 private:
 	// シェーダーの作成
 	void CreateShader();
 	// テクスチャの読み込み
 	void LoadTexture(const wchar_t* path);
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;

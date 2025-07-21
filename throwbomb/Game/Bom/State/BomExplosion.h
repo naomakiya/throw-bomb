@@ -18,13 +18,6 @@ class Sound;
 class BomExplosion :public IBomState
 {
 public:
-    struct ExplosionObject {
-        DirectX::SimpleMath::Vector3 offset;
-        float scaleMultiplier;
-        float startTime;                         // 開始時間
-        float duration;                          // 表示し続ける時間
-        bool active = true;
-    };
 	// コンストラクタ
     BomExplosion(BomState* bomState, const std::vector<std::unique_ptr<Wall>>& wall, PlayerState* player);
 	//デストラクタ
@@ -41,13 +34,17 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection) ;
 	//後処理を行う
 	void Finalize();
+
 private:
+    // クラス作成
+    void ClassCreate();
     //壁の破壊
     void CheckBreak();
     //シェイダーの読み取り
     void ShaderLoad(ID3D11Device* device);
     //バッファーの設定
     void CreateConstanBuffer(ID3D11Device* device);
+
 private:
     // プレイヤー
     PlayerState* m_player;
@@ -77,8 +74,6 @@ private:
     DirectX::SimpleMath::Vector3 m_position;
     // バウンディングスフィア
     DirectX::BoundingSphere m_boundingSphere;
-    // 複数爆破
-    std::vector<ExplosionObject> m_explosionObjects;
 
     // Texture用メンバー（テクスチャーとスプライトバッチ）
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_explosionTexture;

@@ -1,12 +1,14 @@
 /*
   @file  EnemyPOINTMovement.h
-  @brief 敵の目的の場所に移動クラス
+  @brief 敵が目的の場所に移動クラス
 */
+
 #pragma once
 #ifndef ENEMY_PONITMOVEMENT_DEFINED
 #define ENEMY_POINTMOVEMENT_DEFINED
 #include "Interface/IEnemyState.h"
 #include "Interface/IPatrolStrategy.h"
+
 // 前方宣言
 class CommonResources;
 class EnemyState;
@@ -15,8 +17,6 @@ class Wall;
 class EnemyPointMovement : public IEnemyState
 {
 public:
-    // スケールを取得する
-    float GetScale() const { return m_scale; }
     // 位置を取得する
     DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
     // 位置を設定する
@@ -37,13 +37,14 @@ public:
     void SetPatrolStrategy(std::unique_ptr<IPatrolStrategy> strategy) {
         m_patrolStrategy = std::move(strategy);
     }
+
 public:
     // コンストラクタ
     EnemyPointMovement(EnemyState* enemyState, const std::vector<std::unique_ptr<Wall>>& wall);
     // デストラクタ
     ~EnemyPointMovement();
     // 初期化する
-    void Initialize(CommonResources* resources, DirectX::SimpleMath::Vector3 pos);
+    void Initialize(CommonResources* resources);
     // 事前更新する
     void PreUpdate();
     // 更新する
@@ -52,6 +53,7 @@ public:
     void PostUpdate();
     // 描画する
     void Render(ID3D11DeviceContext* context,
+        DirectX::CommonStates* states,
          const DirectX::SimpleMath::Matrix& view,
          const DirectX::SimpleMath::Matrix& projection,
          const DirectX::Model& model);
@@ -90,8 +92,6 @@ private:
     DirectX::SimpleMath::Vector3 m_position;
     //目的地
     DirectX::SimpleMath::Vector3 m_patrolPathPos;
-    //大きさ
-    float m_scale;
     //生存
     bool m_exist;
     // ヒットフラグ

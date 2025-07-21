@@ -2,6 +2,7 @@
   @file  Vase.h
   @brief 壺クラス
 */
+
 #pragma once
 #ifndef VASE_DEFINED
 #define VASE_DEFINED
@@ -15,14 +16,15 @@ class Vase
 public:
 	// 位置を取得する
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
-	//敵の生存取得
-	bool GetExist() const { return m_exist; }
-	//敵の生存設定
-	void SetExist(const bool exist) { m_exist= exist; }
+	// 壺の生存取得
+	bool GetExist() const { return m_isExist; }
+	// 壺の生存設定
+	void SetExist(const bool exist) { m_isExist = exist; }
 	// バウンディングボックスを取得する
 	DirectX::BoundingBox GetBoundingBox() const { return m_boundingBox; }
 	// バウンディングスフィアを取得する
 	DirectX::BoundingSphere GetBoundingSphere() const { return m_boundingSphere; }
+
 public:
 	// コンストラクタ
 	Vase(DirectX::SimpleMath::Vector3 pos);
@@ -38,12 +40,13 @@ public:
 	void Finalize();
 	//壺破壊後の処理
 	void BreacVase();
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
-	// ゴールのモデル
+	// 壺モデル
 	std::unique_ptr<DirectX::Model> m_vaseModel;
-	// デバッグ描画
+	// デバッグ当たり判定の描画
 	std::unique_ptr<CollisionDebugRenderer>  m_collisionDebugRenderer;
 	// 位置
 	DirectX::SimpleMath::Vector3 m_position;
@@ -51,10 +54,8 @@ private:
 	DirectX::BoundingBox m_boundingBox;
 	// バウンディングスフィア
 	DirectX::BoundingSphere m_boundingSphere;
-	// スケール
-	float m_modelScale;
 	//生存
-	bool m_exist;
+	bool m_isExist;
 	
 };
 #endif		// PLAYER_DEFINED
