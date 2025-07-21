@@ -2,7 +2,6 @@
 #include "BinaryFile.h"
 
 #include <fstream>
-#include <assert.h>
 
 
 BinaryFile BinaryFile::LoadFile(const wchar_t * fileName)
@@ -37,13 +36,3 @@ BinaryFile BinaryFile::LoadFile(const wchar_t * fileName)
 	return bin;
 }
 
-BinaryFile::BinaryFile()
-{
-	m_size = 0;
-}
-
-BinaryFile::BinaryFile(BinaryFile && in)
-{
-	m_data = std::move(in.m_data);
-	m_size = in.m_size;
-}
